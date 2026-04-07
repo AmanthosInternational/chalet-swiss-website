@@ -788,6 +788,7 @@ function selectOffer(index) {
     category: selectedOffer.category || '',
     total_price: selectedOffer.totalGrossAmount ? selectedOffer.totalGrossAmount.amount : 0,
     currency: selectedOffer.totalGrossAmount ? selectedOffer.totalGrossAmount.currency : 'CHF',
+    unit_type: selectedOffer.unitGroupName || ''
   });
 
   offersGrid.querySelectorAll('.offer-card').forEach(function (card) {
@@ -805,6 +806,13 @@ function selectOffer(index) {
   if (promoInp) promoInp.value = '';
   updatePriceDisplay();
   renderUpsells();
+
+  gtmPush('begin_checkout', {
+    rate_name: selectedOffer.ratePlanName || '',
+    total_price: selectedOffer.totalGrossAmount ? selectedOffer.totalGrossAmount.amount : 0,
+    currency: selectedOffer.totalGrossAmount ? selectedOffer.totalGrossAmount.currency : 'CHF',
+    extras_total: getUpsellTotal()
+  });
 
   guestForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
