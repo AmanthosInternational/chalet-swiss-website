@@ -167,6 +167,9 @@
   "booking": {
     "calendar_select_checkin": "Select arrival date",
     "calendar_select_checkout": "Select departure date",
+    "rateplan_nonrefbb_ibe": "Loyalty Rate — Non-Refundable",
+    "rateplan_standardbb_ibe": "Standard Rate — Free Cancellation",
+    "rateplan_loyalty_badge": "11% Loyalty Discount",
     "searching": "Checking availability...",
     "guest_details": "Your Details",
     "first_name": "First Name *",

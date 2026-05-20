@@ -16,6 +16,57 @@ var selectedOffer = null;
 var currentOffers = [];
 var searchParams = {};
 
+// Apaleo rate plan code → IBE display mapping for HCSI (Chalet Swiss)
+// Codes come from Apaleo /booking/offers (offer.ratePlanCode / ratePlanId).
+// Mapping handles: category fallback (if Apaleo doesn't classify), friendly
+// display name, and optional discount badge.
+var RATE_PLAN_MAP = {
+  'NONREFBB_IBE': {
+    category: 'Non-Refundable',
+    displayKey: 'booking.rateplan_nonrefbb_ibe',
+    displayFallback: 'Loyalty Rate — Non-Refundable',
+    discountBadgeKey: 'booking.rateplan_loyalty_badge',
+    discountBadgeFallback: '11% Loyalty Discount'
+  },
+  'STANDARDBB_IBE': {
+    category: 'Refundable',
+    displayKey: 'booking.rateplan_standardbb_ibe',
+    displayFallback: 'Standard Rate — Free Cancellation'
+  }
+};
+
+function getRatePlanMapping(offer) {
+  var code = (offer.ratePlanCode || offer.ratePlanId || '').toString().toUpperCase();
+  // Tolerate property-prefixed codes ("HCSI-NONREFBB_IBE") or extra suffixes
+  var direct = RATE_PLAN_MAP[code];
+  if (direct) return direct;
+  for (var key in RATE_PLAN_MAP) {
+    if (RATE_PLAN_MAP.hasOwnProperty(key) && code.indexOf(key) !== -1) return RATE_PLAN_MAP[key];
+  }
+  return null;
+}
+
+function normalizeOffer(offer) {
+  if (!offer) return offer;
+  var mapping = getRatePlanMapping(offer);
+  if (mapping) {
+    if (!offer.category) offer.category = mapping.category;
+    offer._displayName = window.t ? window.t(mapping.displayKey) : mapping.displayFallback;
+    if (offer._displayName === mapping.displayKey) offer._displayName = mapping.displayFallback;
+    if (mapping.discountBadgeKey) {
+      var badge = window.t ? window.t(mapping.discountBadgeKey) : mapping.discountBadgeFallback;
+      if (badge === mapping.discountBadgeKey) badge = mapping.discountBadgeFallback;
+      offer._discountBadge = badge;
+    }
+  } else if (!offer.category) {
+    // Generic fallback when ratePlanCode is unknown
+    var code2 = (offer.ratePlanCode || offer.ratePlanId || '').toString().toUpperCase();
+    if (code2.indexOf('NONREF') !== -1) offer.category = 'Non-Refundable';
+    else if (code2.indexOf('REF') !== -1 || code2.indexOf('STANDARD') !== -1) offer.category = 'Refundable';
+  }
+  return offer;
+}
+
 // Promo codes validated server-side
 var PROMO_CODES = {};
 var appliedPromo = null;
@@ -683,7 +734,7 @@ function fetchOffers() {
   })
   .then(function (data) {
     offersLoading.style.display = 'none';
-    currentOffers = data.offers || [];
+    currentOffers = (data.offers || []).map(normalizeOffer);
     gtmPush('view_offers', {
       location: 'Hotel Chalet Swiss',
       offer_count: currentOffers.length,
@@ -798,7 +849,11 @@ function renderOfferCard(offer, categoryClass, index, isBestPrice) {
   html += '<div class="offer-unit">' + escapeHtml(offer.unitGroupName || (window.t ? window.t('booking.room') : 'Zimmer')) + '</div>';
   html += '<span class="offer-category ' + categoryClass + '">' + (categoryClass === 'refundable' ? (window.t ? window.t('booking.flexible') : 'Flexibel') : (window.t ? window.t('booking.best_price_tag') : 'Bester Preis')) + '</span>';
   html += '</div>';
-  html += '<div class="offer-rate-name">' + escapeHtml(offer.ratePlanName || '') + '</div>';
+  var rateLabel = offer._displayName || offer.ratePlanName || '';
+  html += '<div class="offer-rate-name">' + escapeHtml(rateLabel) + '</div>';
+  if (offer._discountBadge) {
+    html += '<div class="offer-discount-badge">' + escapeHtml(offer._discountBadge) + '</div>';
+  }
   html += '<div class="offer-bottom">';
   html += '<div>';
   html += '<div class="offer-pricing">';
