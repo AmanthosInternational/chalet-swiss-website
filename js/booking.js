@@ -60,14 +60,49 @@ function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function toISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
 function epoch(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
 
-var MONTHS_FULL = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-var MONTHS_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-var DAYS_HEAD = ['Mo','Di','Mi','Do','Fr','Sa','So'];
-var DAYS_NAME = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+function getLocaleTag() {
+  var lang = (window.getLang && window.getLang()) || 'de';
+  return lang === 'en' ? 'en-GB' : 'de-CH';
+}
+function getMonthFull(idx) {
+  return new Date(2000, idx, 1).toLocaleString(getLocaleTag(), { month: 'long' });
+}
+function getMonthShort(idx) {
+  return new Date(2000, idx, 1).toLocaleString(getLocaleTag(), { month: 'short' }).replace('.', '');
+}
+function getDaysHead() {
+  // Mon..Sun (week starts on Monday)
+  var out = [];
+  for (var i = 1; i <= 7; i++) {
+    var d = new Date(2024, 0, i); // 2024-01-01 was a Monday
+    out.push(d.toLocaleString(getLocaleTag(), { weekday: 'short' }).replace('.', ''));
+  }
+  return out;
+}
+function getDayName(jsDayIdx) {
+  // jsDayIdx: 0=Sunday..6=Saturday
+  var ref = new Date(2024, 0, 7 + jsDayIdx); // 2024-01-07 was Sunday → idx 0
+  return ref.toLocaleString(getLocaleTag(), { weekday: 'short' }).replace('.', '');
+}
 
 function fmtDate(d) {
-  return DAYS_NAME[d.getDay()] + ', ' + d.getDate() + '. ' + MONTHS_SHORT[d.getMonth()];
+  var lang = (window.getLang && window.getLang()) || 'de';
+  if (lang === 'en') {
+    return getDayName(d.getDay()) + ', ' + getMonthShort(d.getMonth()) + ' ' + d.getDate();
+  }
+  return getDayName(d.getDay()) + ', ' + d.getDate() + '. ' + getMonthShort(d.getMonth());
 }
+
+document.addEventListener('languageChanged', function () {
+  try {
+    if (cal && cal.el) {
+      var head = cal.el.querySelector('.cal-head');
+      if (head) head.innerHTML = getDaysHead().map(function (d) { return '<span>' + d + '</span>'; }).join('');
+      renderCal();
+    }
+    if (typeof syncInputs === 'function') syncInputs();
+  } catch (e) {}
+});
 
 var cal = {
   checkin: null, checkout: null,
@@ -94,7 +129,7 @@ function buildCalendar() {
       '<span class="cal-title"></span>' +
       '<button class="cal-nav-btn cal-next" aria-label="Nächster Monat">\u203A</button>' +
     '</div>' +
-    '<div class="cal-head">' + DAYS_HEAD.map(function (d) { return '<span>' + d + '</span>'; }).join('') + '</div>' +
+    '<div class="cal-head">' + getDaysHead().map(function (d) { return '<span>' + d + '</span>'; }).join('') + '</div>' +
     '<div class="cal-body"></div>' +
     '<div class="cal-foot"><span class="cal-info"></span></div>';
   document.body.appendChild(div);
@@ -253,8 +288,10 @@ function quickPick(type) {
 
 function renderCal() {
   if (!cal.el) return;
-  cal.el.querySelector('.cal-title').textContent = MONTHS_FULL[cal.month] + ' ' + cal.year;
-  cal.el.querySelector('.cal-info').textContent = cal.selecting === 'checkin' ? 'Anreisedatum wählen' : 'Abreisedatum wählen';
+  cal.el.querySelector('.cal-title').textContent = getMonthFull(cal.month) + ' ' + cal.year;
+  var infoKey = cal.selecting === 'checkin' ? 'booking.calendar_select_checkin' : 'booking.calendar_select_checkout';
+  var infoFallback = cal.selecting === 'checkin' ? 'Anreisedatum wählen' : 'Abreisedatum wählen';
+  cal.el.querySelector('.cal-info').textContent = window.t ? window.t(infoKey) : infoFallback;
 
   var first = new Date(cal.year, cal.month, 1);
   var daysInMonth = new Date(cal.year, cal.month + 1, 0).getDate();

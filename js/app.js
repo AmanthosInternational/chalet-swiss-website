@@ -176,7 +176,7 @@ var roomData = [
     descKey: 'rooms.desc_standard_double',
     desc: 'Komfortables Doppelzimmer mit allem, was Sie für einen angenehmen Aufenthalt benötigen. Perfekt für Paare.',
     amenities: [
-      { key: 'rooms.amenity_double_bed', label: 'Doppelbett', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 012 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>' },
+      { key: 'rooms.amenity_double_twin_bed', label: 'Doppel- oder Twinbett', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4v16"/><path d="M2 13h20"/><path d="M22 13v7"/><path d="M2 8h6a2 2 0 012 2v3"/><path d="M12 8h6a2 2 0 012 2v3"/></svg>' },
       { key: 'rooms.amenity_tv', label: 'TV', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>' },
       { key: 'rooms.amenity_breakfast', label: 'Frühstück', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8h1a4 4 0 110 8h-1"/><path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>' },
       { key: 'rooms.amenity_bath', label: 'Bad/Dusche', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1z"/><path d="M6 12V5a2 2 0 012-2h3v2.25"/></svg>' },
@@ -224,7 +224,7 @@ var roomData = [
     descKey: 'rooms.desc_superior_twin',
     desc: 'Elegantes Zweibettzimmer mit privatem Balkon und atemberaubendem Bergblick. Zwei bequeme Einzelbetten für flexible Schlafmöglichkeiten.',
     amenities: [
-      { key: 'rooms.amenity_2_beds', label: '2 Betten', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 012 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>' },
+      { key: 'rooms.amenity_double_twin_bed', label: 'Doppel- oder Twinbett', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4v16"/><path d="M2 13h20"/><path d="M22 13v7"/><path d="M2 8h6a2 2 0 012 2v3"/><path d="M12 8h6a2 2 0 012 2v3"/></svg>' },
       { key: 'rooms.amenity_balcony', label: 'Balkon', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="12" x2="12" y2="21"/></svg>' },
       { key: 'rooms.amenity_mountain_view', label: 'Bergblick', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21l4-10 4 10"/><path d="M14.5 15l3.5-7 4 10H2l6-12 3.5 7"/></svg>' },
       { key: 'rooms.amenity_tv', label: 'TV', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>' },
