@@ -1682,6 +1682,19 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44,44,44,.85); }
   margin-bottom: .5rem;
 }
 
+.offer-discount-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  margin-bottom: .5rem;
+  text-transform: uppercase;
+}
+
 .offer-bottom {
   display: flex;
   align-items: center;

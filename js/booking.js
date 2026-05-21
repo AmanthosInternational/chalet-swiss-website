@@ -16,6 +16,91 @@ var selectedOffer = null;
 var currentOffers = [];
 var searchParams = {};
 
+// Apaleo rate plan code → IBE display mapping for HCSI (Chalet Swiss)
+// Codes come from Apaleo /booking/offers (offer.ratePlanCode / ratePlanId).
+// Mapping handles: category fallback (if Apaleo doesn't classify), friendly
+// display name, and optional discount badge.
+var RATE_PLAN_MAP = {
+  'NONREFBB_IBE': {
+    category: 'Non-Refundable',
+    displayKey: 'booking.rateplan_nonrefbb_ibe',
+    displayFallback: 'Loyalty Rate — Non-Refundable',
+    discountBadgeKey: 'booking.rateplan_loyalty_badge',
+    discountBadgeFallback: '11% Loyalty Discount'
+  },
+  'STANDARDBB_IBE': {
+    category: 'Refundable',
+    displayKey: 'booking.rateplan_standardbb_ibe',
+    displayFallback: 'Standard Rate — Free Cancellation',
+    discountBadgeKey: 'booking.rateplan_loyalty_badge',
+    discountBadgeFallback: '11% Loyalty Discount'
+  }
+};
+
+function getRatePlanMapping(offer) {
+  var code = (offer.ratePlanCode || offer.ratePlanId || '').toString().toUpperCase();
+  // Tolerate property-prefixed codes ("HCSI-NONREFBB_IBE") or extra suffixes
+  var direct = RATE_PLAN_MAP[code];
+  if (direct) return direct;
+  for (var key in RATE_PLAN_MAP) {
+    if (RATE_PLAN_MAP.hasOwnProperty(key) && code.indexOf(key) !== -1) return RATE_PLAN_MAP[key];
+  }
+  return null;
+}
+
+// Apaleo unit group name → IBE display name mapping.
+// Apaleo returns the raw unit group name (varies per property setup); we
+// override it client-side so the availability cards match the room names
+// used on the rest of the website. `match` tests run case-insensitive
+// against the trimmed Apaleo name; first hit wins, so put more specific
+// patterns first.
+var UNIT_GROUP_NAME_MAP = [
+  { match: ['superior twin balcony', 'superior twin balkon', 'superior zwillingszimmer', 'superior doppel oder twin', 'superior doppelzimmer mit balkon und bergblick', 'superior double or twin', 'superior double room with balcony'], nameKey: 'rooms.name_superior_twin', fallback: 'Superior Double or Twin with Mountain View' },
+  { match: ['superior double', 'superior doppel', 'superior doppelzimmer', 'double with balcony', 'doppel mit balkon', 'doppelzimmer mit balkon'], nameKey: 'rooms.name_superior_double', fallback: 'Double with Balcony' },
+  { match: ['standard double', 'standard doppel', 'doppelzimmer standard', 'standard double/twin', 'standard doppel/twin', 'standard double / twin', 'standard doppel / twin'], nameKey: 'rooms.name_standard_double', fallback: 'Standard Double / Twin' },
+  { match: ['family room 4', 'familienzimmer 4', 'familienzimmer (4)', 'familienzimmer 4 bett', 'family room 4 bed'], nameKey: 'rooms.name_family_4', fallback: 'Family Room 4 Bed' },
+  { match: ['family room 3', 'familienzimmer 3', 'familienzimmer (3)', 'familienzimmer 3 bett', 'family room 3 bed'], nameKey: 'rooms.name_family_3', fallback: 'Family Room 3 Bed' },
+  { match: ['single room', 'einzelzimmer'], nameKey: 'rooms.name_single', fallback: 'Single Room' }
+];
+
+function getDisplayUnitGroupName(apaleoName) {
+  var raw = (apaleoName || '').toString().trim().toLowerCase();
+  if (!raw) return apaleoName || '';
+  for (var i = 0; i < UNIT_GROUP_NAME_MAP.length; i++) {
+    var entry = UNIT_GROUP_NAME_MAP[i];
+    for (var j = 0; j < entry.match.length; j++) {
+      if (raw.indexOf(entry.match[j]) !== -1) {
+        var translated = window.t ? window.t(entry.nameKey) : entry.fallback;
+        if (translated === entry.nameKey) translated = entry.fallback;
+        return translated;
+      }
+    }
+  }
+  return apaleoName;
+}
+
+function normalizeOffer(offer) {
+  if (!offer) return offer;
+  var mapping = getRatePlanMapping(offer);
+  if (mapping) {
+    if (!offer.category) offer.category = mapping.category;
+    offer._displayName = window.t ? window.t(mapping.displayKey) : mapping.displayFallback;
+    if (offer._displayName === mapping.displayKey) offer._displayName = mapping.displayFallback;
+    if (mapping.discountBadgeKey) {
+      var badge = window.t ? window.t(mapping.discountBadgeKey) : mapping.discountBadgeFallback;
+      if (badge === mapping.discountBadgeKey) badge = mapping.discountBadgeFallback;
+      offer._discountBadge = badge;
+    }
+  } else if (!offer.category) {
+    // Generic fallback when ratePlanCode is unknown
+    var code2 = (offer.ratePlanCode || offer.ratePlanId || '').toString().toUpperCase();
+    if (code2.indexOf('NONREF') !== -1) offer.category = 'Non-Refundable';
+    else if (code2.indexOf('REF') !== -1 || code2.indexOf('STANDARD') !== -1) offer.category = 'Refundable';
+  }
+  offer._displayUnitGroupName = getDisplayUnitGroupName(offer.unitGroupName);
+  return offer;
+}
+
 // Promo codes validated server-side
 var PROMO_CODES = {};
 var appliedPromo = null;
@@ -60,14 +145,65 @@ function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function toISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
 function epoch(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
 
-var MONTHS_FULL = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-var MONTHS_SHORT = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-var DAYS_HEAD = ['Mo','Di','Mi','Do','Fr','Sa','So'];
-var DAYS_NAME = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+function getLocaleTag() {
+  var lang = (window.getLang && window.getLang()) || 'de';
+  return lang === 'en' ? 'en-GB' : 'de-CH';
+}
+function getMonthFull(idx) {
+  return new Date(2000, idx, 1).toLocaleString(getLocaleTag(), { month: 'long' });
+}
+function getMonthShort(idx) {
+  return new Date(2000, idx, 1).toLocaleString(getLocaleTag(), { month: 'short' }).replace('.', '');
+}
+function getDaysHead() {
+  // Mon..Sun (week starts on Monday)
+  var out = [];
+  for (var i = 1; i <= 7; i++) {
+    var d = new Date(2024, 0, i); // 2024-01-01 was a Monday
+    out.push(d.toLocaleString(getLocaleTag(), { weekday: 'short' }).replace('.', ''));
+  }
+  return out;
+}
+function getDayName(jsDayIdx) {
+  // jsDayIdx: 0=Sunday..6=Saturday
+  var ref = new Date(2024, 0, 7 + jsDayIdx); // 2024-01-07 was Sunday → idx 0
+  return ref.toLocaleString(getLocaleTag(), { weekday: 'short' }).replace('.', '');
+}
 
 function fmtDate(d) {
-  return DAYS_NAME[d.getDay()] + ', ' + d.getDate() + '. ' + MONTHS_SHORT[d.getMonth()];
+  var lang = (window.getLang && window.getLang()) || 'de';
+  if (lang === 'en') {
+    return getDayName(d.getDay()) + ', ' + getMonthShort(d.getMonth()) + ' ' + d.getDate();
+  }
+  return getDayName(d.getDay()) + ', ' + d.getDate() + '. ' + getMonthShort(d.getMonth());
 }
+
+document.addEventListener('languageChanged', function () {
+  try {
+    if (cal && cal.el) {
+      var head = cal.el.querySelector('.cal-head');
+      if (head) head.innerHTML = getDaysHead().map(function (d) { return '<span>' + d + '</span>'; }).join('');
+      cal.el.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n');
+        var v = window.t ? window.t(key) : null;
+        if (v && v !== key) el.textContent = v;
+      });
+      cal.el.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n-aria');
+        var v = window.t ? window.t(key) : null;
+        if (v && v !== key) el.setAttribute('aria-label', v);
+      });
+      renderCal();
+    }
+    if (currentOffers && currentOffers.length) {
+      currentOffers = currentOffers.map(normalizeOffer);
+      if (offersGrid && offersGrid.querySelectorAll('.offer-card').length) {
+        renderOffers({ offers: currentOffers, nights: getBookingNights(), adults: searchParams.adults, arrival: searchParams.arrival, departure: searchParams.departure });
+      }
+    }
+    if (typeof syncInputs === 'function') syncInputs();
+  } catch (e) {}
+});
 
 var cal = {
   checkin: null, checkout: null,
@@ -78,23 +214,29 @@ var cal = {
   el: null
 };
 
+function tFallback(key, fb) {
+  if (!window.t) return fb;
+  var v = window.t(key);
+  return (v && v !== key) ? v : fb;
+}
+
 function buildCalendar() {
   var div = document.createElement('div');
   div.id = 'calDropdown';
   div.className = 'cal-dropdown';
   div.innerHTML =
     '<div class="cal-picks">' +
-      '<button class="cal-pick" data-pick="tonight">Heute Nacht</button>' +
-      '<button class="cal-pick" data-pick="weekend">Dieses WE</button>' +
-      '<button class="cal-pick" data-pick="next-weekend">Nächstes WE</button>' +
-      '<button class="cal-pick" data-pick="week">1 Woche</button>' +
+      '<button class="cal-pick" data-pick="tonight" data-i18n="booking.cal_pick_tonight">' + tFallback('booking.cal_pick_tonight', 'Heute Nacht') + '</button>' +
+      '<button class="cal-pick" data-pick="weekend" data-i18n="booking.cal_pick_weekend">' + tFallback('booking.cal_pick_weekend', 'Dieses WE') + '</button>' +
+      '<button class="cal-pick" data-pick="next-weekend" data-i18n="booking.cal_pick_next_weekend">' + tFallback('booking.cal_pick_next_weekend', 'Nächstes WE') + '</button>' +
+      '<button class="cal-pick" data-pick="week" data-i18n="booking.cal_pick_week">' + tFallback('booking.cal_pick_week', '1 Woche') + '</button>' +
     '</div>' +
     '<div class="cal-nav">' +
-      '<button class="cal-nav-btn cal-prev" aria-label="Vorheriger Monat">\u2039</button>' +
+      '<button class="cal-nav-btn cal-prev" data-i18n-aria="booking.cal_prev_month" aria-label="' + tFallback('booking.cal_prev_month', 'Vorheriger Monat') + '">\u2039</button>' +
       '<span class="cal-title"></span>' +
-      '<button class="cal-nav-btn cal-next" aria-label="Nächster Monat">\u203A</button>' +
+      '<button class="cal-nav-btn cal-next" data-i18n-aria="booking.cal_next_month" aria-label="' + tFallback('booking.cal_next_month', 'Nächster Monat') + '">\u203A</button>' +
     '</div>' +
-    '<div class="cal-head">' + DAYS_HEAD.map(function (d) { return '<span>' + d + '</span>'; }).join('') + '</div>' +
+    '<div class="cal-head">' + getDaysHead().map(function (d) { return '<span>' + d + '</span>'; }).join('') + '</div>' +
     '<div class="cal-body"></div>' +
     '<div class="cal-foot"><span class="cal-info"></span></div>';
   document.body.appendChild(div);
@@ -253,8 +395,10 @@ function quickPick(type) {
 
 function renderCal() {
   if (!cal.el) return;
-  cal.el.querySelector('.cal-title').textContent = MONTHS_FULL[cal.month] + ' ' + cal.year;
-  cal.el.querySelector('.cal-info').textContent = cal.selecting === 'checkin' ? 'Anreisedatum wählen' : 'Abreisedatum wählen';
+  cal.el.querySelector('.cal-title').textContent = getMonthFull(cal.month) + ' ' + cal.year;
+  var infoKey = cal.selecting === 'checkin' ? 'booking.calendar_select_checkin' : 'booking.calendar_select_checkout';
+  var infoFallback = cal.selecting === 'checkin' ? 'Anreisedatum wählen' : 'Abreisedatum wählen';
+  cal.el.querySelector('.cal-info').textContent = window.t ? window.t(infoKey) : infoFallback;
 
   var first = new Date(cal.year, cal.month, 1);
   var daysInMonth = new Date(cal.year, cal.month + 1, 0).getDate();
@@ -329,7 +473,10 @@ function updateNightsBadge() {
   if (cal.checkin && cal.checkout) {
     var nights = Math.round((epoch(cal.checkout) - epoch(cal.checkin)) / 86400000);
     if (nights > 0) {
-      nightsBadge.textContent = nights + (nights === 1 ? ' Nacht' : ' Nächte');
+      var nightLbl = nights === 1
+        ? tFallback('booking.night', 'Nacht')
+        : tFallback('booking.nights', 'Nächte');
+      nightsBadge.textContent = nights + ' ' + nightLbl;
       nightsBadge.classList.add('visible');
       return;
     }
@@ -646,7 +793,7 @@ function fetchOffers() {
   })
   .then(function (data) {
     offersLoading.style.display = 'none';
-    currentOffers = data.offers || [];
+    currentOffers = (data.offers || []).map(normalizeOffer);
     gtmPush('view_offers', {
       location: 'Hotel Chalet Swiss',
       offer_count: currentOffers.length,
@@ -756,12 +903,17 @@ function renderOfferCard(offer, categoryClass, index, isBestPrice) {
   var totalAmount = total.amount ? (Math.round(total.amount * 100) / 100).toFixed(2) : '\u2014';
   var perNightAmount = perNight.amount ? (Math.round(perNight.amount * 100) / 100).toFixed(2) : '\u2014';
 
-  var html = '<div class="offer-card' + (isBestPrice ? ' best-price' : '') + '" data-index="' + index + '" tabindex="0" role="button" aria-label="' + escapeHtml(offer.unitGroupName || '') + '">';
+  var unitName = offer._displayUnitGroupName || offer.unitGroupName || '';
+  var html = '<div class="offer-card' + (isBestPrice ? ' best-price' : '') + '" data-index="' + index + '" tabindex="0" role="button" aria-label="' + escapeHtml(unitName) + '">';
   html += '<div class="offer-card-top">';
-  html += '<div class="offer-unit">' + escapeHtml(offer.unitGroupName || (window.t ? window.t('booking.room') : 'Zimmer')) + '</div>';
+  html += '<div class="offer-unit">' + escapeHtml(unitName || (window.t ? window.t('booking.room') : 'Zimmer')) + '</div>';
   html += '<span class="offer-category ' + categoryClass + '">' + (categoryClass === 'refundable' ? (window.t ? window.t('booking.flexible') : 'Flexibel') : (window.t ? window.t('booking.best_price_tag') : 'Bester Preis')) + '</span>';
   html += '</div>';
-  html += '<div class="offer-rate-name">' + escapeHtml(offer.ratePlanName || '') + '</div>';
+  var rateLabel = offer._displayName || offer.ratePlanName || '';
+  html += '<div class="offer-rate-name">' + escapeHtml(rateLabel) + '</div>';
+  if (offer._discountBadge) {
+    html += '<div class="offer-discount-badge">' + escapeHtml(offer._discountBadge) + '</div>';
+  }
   html += '<div class="offer-bottom">';
   html += '<div>';
   html += '<div class="offer-pricing">';
