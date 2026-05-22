@@ -214,6 +214,13 @@
 
   window.getLang = function () { return currentLang; };
 
+  function dispatchLanguageChanged() {
+    var event;
+    try { event = new CustomEvent('languageChanged', { detail: { lang: currentLang } }); }
+    catch (e) { event = document.createEvent('CustomEvent'); event.initCustomEvent('languageChanged', true, true, { lang: currentLang }); }
+    document.dispatchEvent(event);
+  }
+
   function init() {
     detectBasePath();
     currentLang = detectLanguage();
@@ -222,10 +229,12 @@
         loadTranslation(currentLang, function (dict) {
           applyTranslations(dict);
           buildSelector();
+          dispatchLanguageChanged();
         });
       } else {
         applyTranslations(translations[DEFAULT_LANG]);
         buildSelector();
+        dispatchLanguageChanged();
       }
     });
   }

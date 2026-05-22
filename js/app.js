@@ -304,7 +304,8 @@ function renderRoom(index) {
   var html = '<div class="room-gallery">';
   html += '<img src="' + room.images[0] + '" alt="' + name + '" loading="lazy">';
   html += '<span class="room-count-badge">' + countLabel + '</span>';
-  html += '<span class="room-price-badge">' + room.price + ' ' + room.priceNote + '</span>';
+  var priceNote = t('pricing.per_night') !== 'pricing.per_night' ? t('pricing.per_night') : room.priceNote;
+  html += '<span class="room-price-badge">' + room.price + ' ' + priceNote + '</span>';
   if (room.images.length > 1) {
     html += '<button class="room-gallery-nav room-gallery-prev" aria-label="Previous image"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>';
     html += '<button class="room-gallery-nav room-gallery-next" aria-label="Next image"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>';
@@ -380,6 +381,9 @@ if ('IntersectionObserver' in window) {
 } else {
   renderRoom(0);
 }
+document.addEventListener('languageChanged', function () {
+  if (roomDisplay && roomDisplay.innerHTML) renderRoom(currentRoomIndex);
+});
 }
 
 // ========== LIGHTBOX ==========

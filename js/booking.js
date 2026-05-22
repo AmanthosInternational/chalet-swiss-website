@@ -180,6 +180,9 @@ function fmtDate(d) {
 
 document.addEventListener('languageChanged', function () {
   try {
+    if (typeof updateGuestsLabel === 'function' && document.getElementById('guestsLabel')) {
+      updateGuestsLabel();
+    }
     if (cal && cal.el) {
       var head = cal.el.querySelector('.cal-head');
       if (head) head.innerHTML = getDaysHead().map(function (d) { return '<span>' + d + '</span>'; }).join('');
