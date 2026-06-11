@@ -276,7 +276,13 @@
     "upsell_locker": "Locker Box",
     "upsell_locker_desc": "Per day",
     "upsell_parking": "Parking",
-    "upsell_parking_desc": "Per day"
+    "upsell_parking_desc": "Per day",
+    "citytax": "City tax",
+    "citytax_note": "incl. city tax — paid with your booking",
+    "summary_room": "Room",
+    "summary_addons": "Add-ons",
+    "summary_discount": "Discount",
+    "summary_total": "Total"
   },
   "trust": {
     "label": "Why Book Direct?",

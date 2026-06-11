@@ -1,8 +1,15 @@
+/*
+ * Chalet Swiss Internet Booking Engine (IBE)
+ * Version 2.0 — Kurtaxe (city tax) is shown and charged online (brutto pricing).
+ * Version 1.0 (city tax collected at check-in) is preserved on the `main` branch.
+ */
 (function () {
 'use strict';
 
+var IBE_VERSION = '2.0';
 var API_BASE = window.CHALETSWISS_API_BASE || 'https://amanthos-website-api.onrender.com';
 var PROPERTY_ID = 'HCSI';
+try { console.info('Chalet Swiss IBE v' + IBE_VERSION + ' (city tax brutto)'); } catch (e) {}
 
 // dataLayer helper for GTM conversion tracking
 window.dataLayer = window.dataLayer || [];
@@ -124,6 +131,19 @@ var selectedUpsells = {};
 
 // Currency rounding — all CHF amounts go through this to avoid floating-point drift
 function roundCHF(n) { return Math.round(n * 100) / 100; }
+
+// City tax (Kurtaxe). The backend returns Apaleo's city tax for the searched
+// adults only; scale it to all persons (incl. children) since every person pays
+// the same per-night rate. Charged on top of the room, never discounted.
+function getOfferCityTax(offer) {
+  if (!offer || !offer.cityTax || !offer.cityTax.amount) return 0;
+  var base = offer.cityTax.amount;
+  var adults = parseInt(searchParams.adults) || 1;
+  var children = parseInt(searchParams.children) || 0;
+  if (adults <= 0) return roundCHF(base);
+  return roundCHF(base * (adults + children) / adults);
+}
+function getCityTaxTotal() { return getOfferCityTax(selectedOffer); }
 
 var searchBtn = document.getElementById('bookingSearchBtn');
 var bookingSection = document.getElementById('booking');
@@ -922,6 +942,12 @@ function renderOfferCard(offer, categoryClass, index, isBestPrice) {
   html += '<div class="offer-pricing">';
   html += '<div class="offer-price">CHF ' + perNightAmount + ' <small>' + (window.t ? window.t('booking.per_night') : '/ Nacht') + '</small></div>';
   html += '<div class="offer-total">CHF ' + totalAmount + ' ' + (window.t ? window.t('booking.total') : 'total') + '</div>';
+  var cardCityTax = getOfferCityTax(offer);
+  if (cardCityTax > 0 && total.amount) {
+    var cardBrutto = roundCHF(total.amount + cardCityTax);
+    html += '<div class="offer-citytax" style="font-size:.74rem;color:var(--color-text-muted);margin-top:.2rem;">+ CHF ' + cardCityTax.toFixed(2) + ' ' + tFallback('booking.citytax', 'Kurtaxe') + '</div>';
+    html += '<div class="offer-brutto" style="font-size:.85rem;font-weight:700;color:var(--color-primary);margin-top:.1rem;">CHF ' + cardBrutto.toFixed(2) + ' ' + tFallback('booking.summary_total', 'Gesamt') + '</div>';
+  }
   html += '</div>';
   html += '<div class="offer-trust">';
   html += '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> ';
@@ -1103,37 +1129,60 @@ function getDiscountedTotal() {
   return { amount: totalCents / 100, currency: selectedOffer.totalGrossAmount.currency };
 }
 
-function updatePriceDisplay() {
-  var display = document.getElementById('promoDiscountDisplay');
-  if (!display || !selectedOffer || !selectedOffer.totalGrossAmount) return;
+// Compute the cents breakdown for the selected offer. Promo applies to
+// room + add-ons only; the city tax (Kurtaxe) is a tax and is never discounted.
+function getPriceBreakdown() {
+  if (!selectedOffer || !selectedOffer.totalGrossAmount) return null;
+  var roomCents = Math.round(selectedOffer.totalGrossAmount.amount * 100);
   var upsellCents = Math.round(getUpsellTotal() * 100);
-  var html = '';
-  if (appliedPromo || upsellCents > 0) {
-    var orig = selectedOffer.totalGrossAmount;
-    var origCents = Math.round(orig.amount * 100);
-    var fullOrigCents = origCents + upsellCents;
-    if (appliedPromo) {
-      var discCents = appliedPromo.fixedPrice != null ? Math.round(appliedPromo.fixedPrice * 100) : Math.round(fullOrigCents * (1 - appliedPromo.discount));
-      html += '<span style="text-decoration:line-through;color:var(--color-text-muted);font-size:.9rem;">' + orig.currency + ' ' + (fullOrigCents / 100).toFixed(2) + '</span> ';
-      html += '<span style="color:#059669;font-weight:700;font-size:1.1rem;">' + orig.currency + ' ' + (discCents / 100).toFixed(2) + '</span>';
+  var cityTaxCents = Math.round(getCityTaxTotal() * 100);
+  var promoCents = 0;
+  if (appliedPromo) {
+    if (appliedPromo.fixedPrice != null) {
+      promoCents = (roomCents + upsellCents) - Math.round(appliedPromo.fixedPrice * 100);
+    } else {
+      promoCents = Math.round((roomCents + upsellCents) * appliedPromo.discount);
     }
-    if (upsellCents > 0 && !appliedPromo) {
-      var combinedCents = origCents + upsellCents;
-      html += '<div style="font-size:.82rem;color:var(--color-text-muted);margin-top:.4rem;">';
-      html += '+ CHF ' + (upsellCents / 100).toFixed(2) + ' Add-ons';
-      html += ' = <strong style="color:var(--color-primary);">CHF ' + (combinedCents / 100).toFixed(2) + '</strong>';
-      html += '</div>';
-    } else if (upsellCents > 0 && appliedPromo) {
-      html += '<div style="font-size:.82rem;color:var(--color-text-muted);margin-top:.4rem;">';
-      html += (window.t ? window.t('booking.includes_addons') : 'Inkl. Add-ons im Wert von') + ' CHF ' + (upsellCents / 100).toFixed(2);
-      html += '</div>';
-    }
-    display.innerHTML = html;
-    display.style.display = 'block';
-  } else {
-    display.style.display = 'none';
-    display.innerHTML = '';
+    if (promoCents < 0) promoCents = 0;
   }
+  var roomUpsellNet = (roomCents + upsellCents) - promoCents;
+  return {
+    currency: selectedOffer.totalGrossAmount.currency || 'CHF',
+    roomCents: roomCents,
+    upsellCents: upsellCents,
+    cityTaxCents: cityTaxCents,
+    promoCents: promoCents,
+    roomUpsellNet: roomUpsellNet,         // what the room+add-ons cost after promo
+    totalCents: roomUpsellNet + cityTaxCents,  // brutto grand total
+  };
+}
+
+function updatePriceDisplay() {
+  var box = document.getElementById('priceSummary');
+  var b = getPriceBreakdown();
+  if (!box || !b) { if (box) { box.style.display = 'none'; box.innerHTML = ''; } return; }
+  var cur = b.currency;
+  function line(label, cents, opts) {
+    opts = opts || {};
+    var color = opts.muted ? 'var(--color-text-muted)' : 'var(--color-text)';
+    var weight = opts.big ? '700' : (opts.muted ? '400' : '500');
+    var size = opts.big ? '1.05rem' : '.9rem';
+    var sign = opts.negative ? '− ' : '';
+    return '<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.18rem 0;color:' + color + ';font-size:' + size + ';font-weight:' + weight + ';">' +
+      '<span>' + label + '</span><span>' + sign + cur + ' ' + (Math.abs(cents) / 100).toFixed(2) + '</span></div>';
+  }
+  var html = '';
+  html += line(tFallback('booking.summary_room', 'Zimmer'), b.roomCents, {});
+  if (b.upsellCents > 0) html += line(tFallback('booking.summary_addons', 'Add-ons'), b.upsellCents, { muted: true });
+  if (b.promoCents > 0) html += line((appliedPromo && appliedPromo.label ? appliedPromo.label + ' ' : '') + tFallback('booking.summary_discount', 'Rabatt'), b.promoCents, { muted: true, negative: true });
+  if (b.cityTaxCents > 0) html += line(tFallback('booking.citytax', 'Kurtaxe'), b.cityTaxCents, { muted: true });
+  html += '<div style="border-top:1px solid var(--color-border,#e5e5e5);margin:.4rem 0;"></div>';
+  html += line(tFallback('booking.summary_total', 'Gesamtbetrag'), b.totalCents, { big: true });
+  if (b.cityTaxCents > 0) {
+    html += '<div style="font-size:.72rem;color:var(--color-text-muted);margin-top:.3rem;">' + tFallback('booking.citytax_note', 'inkl. Kurtaxe — wird mit der Buchung bezahlt') + '</div>';
+  }
+  box.innerHTML = html;
+  box.style.display = 'block';
 }
 
 // Confirm booking
@@ -1208,7 +1257,9 @@ if (confirmBtn) {
       arrival: searchParams.arrival,
       departure: searchParams.departure,
       adults: parseInt(searchParams.adults),
+      children: parseInt(searchParams.children) || 0,
       totalAmount: fullCents / 100,
+      cityTax: getCityTaxTotal(),
       upsells: upsellsList,
       currency: selectedOffer.totalGrossAmount ? selectedOffer.totalGrossAmount.currency : 'CHF',
       booker: {
@@ -1503,15 +1554,9 @@ function showPaymentStep(confirmationId, paymentLink, email, bookingData) {
   var reservationId = bookingData.reservationId || '';
 
   var totalText = '';
-  if (selectedOffer && selectedOffer.totalGrossAmount) {
-    var roomCents = Math.round(selectedOffer.totalGrossAmount.amount * 100);
-    var upsellCents = Math.round(getUpsellTotal() * 100);
-    var fullCents = roomCents + upsellCents;
-    if (appliedPromo) {
-      if (appliedPromo.fixedPrice != null) { fullCents = Math.round(appliedPromo.fixedPrice * 100); }
-      else { fullCents = Math.round(fullCents * (1 - appliedPromo.discount)); }
-    }
-    totalText = (selectedOffer.totalGrossAmount.currency || 'CHF') + ' ' + (fullCents / 100).toFixed(2);
+  var pb = getPriceBreakdown();
+  if (pb) {
+    totalText = pb.currency + ' ' + (pb.totalCents / 100).toFixed(2);
   }
 
   var html = '';
@@ -1596,15 +1641,9 @@ function showPaymentRetry(confirmationId, email, bookingData) {
   var paymentSection = getOrCreatePaymentSection();
 
   var totalText = '';
-  if (selectedOffer && selectedOffer.totalGrossAmount) {
-    var roomCents = Math.round(selectedOffer.totalGrossAmount.amount * 100);
-    var upsellCents = Math.round(getUpsellTotal() * 100);
-    var fullCents = roomCents + upsellCents;
-    if (appliedPromo) {
-      if (appliedPromo.fixedPrice != null) { fullCents = Math.round(appliedPromo.fixedPrice * 100); }
-      else { fullCents = Math.round(fullCents * (1 - appliedPromo.discount)); }
-    }
-    totalText = (selectedOffer.totalGrossAmount.currency || 'CHF') + ' ' + (fullCents / 100).toFixed(2);
+  var pb = getPriceBreakdown();
+  if (pb) {
+    totalText = pb.currency + ' ' + (pb.totalCents / 100).toFixed(2);
   }
 
   var html = '';
