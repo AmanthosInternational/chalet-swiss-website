@@ -276,7 +276,13 @@
     "upsell_locker": "Schliessfach",
     "upsell_locker_desc": "Pro Tag",
     "upsell_parking": "Parkplatz",
-    "upsell_parking_desc": "Pro Tag"
+    "upsell_parking_desc": "Pro Tag",
+    "citytax": "Kurtaxe",
+    "citytax_note": "inkl. Kurtaxe — wird mit der Buchung bezahlt",
+    "summary_room": "Zimmer",
+    "summary_addons": "Add-ons",
+    "summary_discount": "Rabatt",
+    "summary_total": "Gesamtbetrag"
   },
   "trust": {
     "label": "Warum direkt buchen?",
