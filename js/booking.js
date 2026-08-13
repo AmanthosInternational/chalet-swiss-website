@@ -724,7 +724,7 @@ function updateGuestCount(type, dir) {
     if (el) el.textContent = newVal;
   } else {
     var val = parseInt(childInput.value) || 0;
-    var newVal = Math.max(0, Math.min(4, val + dir));
+    var newVal = Math.max(0, Math.min(2, val + dir));
     childInput.value = newVal;
     var el = document.getElementById('childCount');
     if (el) el.textContent = newVal;
