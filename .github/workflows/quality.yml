@@ -37,7 +37,7 @@ jobs:
           # 429 wird akzeptiert: LinkedIn und Instagram antworten Crawlern mit
           # Rate-Limit statt mit 200, das ist kein toter Link.
           args: >-
-            --base ${{ env.SITE_URL }}
+            --base-url ${{ env.SITE_URL }}
             --accept 200..=206,429
             --no-progress
             --max-concurrency 4
