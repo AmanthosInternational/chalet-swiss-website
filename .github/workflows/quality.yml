@@ -1,0 +1,83 @@
+# Wöchentlicher Qualitätswächter für chalet-swiss.ch
+#
+# Prüft die DEPLOYTE Seite, nicht das Repo: tote Links, Core Web Vitals und
+# Barrierefreiheit. Kein Build-Step, kein package.json, keine Lockfiles — alles läuft
+# über npx bzw. wird nach $RUNNER_TEMP installiert. Braucht kein einziges Secret.
+#
+# Kein PR-Blocker: Auf diesem Repo laufen kaum Pull Requests. Ausgelöst wird nach dem
+# Deploy, wöchentlich und von Hand.
+name: Quality
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  schedule:
+    # Versetzt zu den drei Schwesterseiten, damit nie vier Crawls gleichzeitig laufen.
+    - cron: "47 5 * * 1"
+
+permissions:
+  contents: read
+
+env:
+  SITE_URL: https://chalet-swiss.ch
+
+jobs:
+  links:
+    name: Tote Links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: GitHub Pages nach dem Push abwarten
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # 429 wird akzeptiert: LinkedIn und Instagram antworten Crawlern mit
+          # Rate-Limit statt mit 200, das ist kein toter Link.
+          args: >-
+            --base ${{ env.SITE_URL }}
+            --accept 200..=206,429
+            --no-progress
+            --max-concurrency 4
+            './**/*.html'
+          fail: true
+
+  lighthouse:
+    name: Web Vitals
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: GitHub Pages nach dem Push abwarten
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: Unlighthouse gegen die Live-Seite
+        # Erster Lauf bewusst ohne Budget: erst die Baseline messen, dann in einem
+        # Folge-Commit ein Budget festschreiben. Ein geratenes Budget wäre entweder
+        # wirkungslos oder dauerhaft rot.
+        run: npx --yes @unlighthouse/cli ci --site "$SITE_URL" --no-cache
+
+  a11y:
+    name: Barrierefreiheit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+      - name: GitHub Pages nach dem Push abwarten
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: Playwright und axe nach RUNNER_TEMP installieren
+        # Bewusst NICHT ins Repo: dieses Repo bleibt ohne package.json und node_modules.
+        run: |
+          npm install --prefix "$RUNNER_TEMP/a11y" playwright @axe-core/playwright
+          npx --prefix "$RUNNER_TEMP/a11y" playwright install --with-deps chromium
+      - name: axe-Scan
+        env:
+          NODE_PATH: ${{ runner.temp }}/a11y/node_modules
+        run: node .github/scripts/axe.cjs "$SITE_URL"

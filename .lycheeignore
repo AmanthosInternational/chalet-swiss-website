@@ -1,0 +1,3 @@
+# Adressen, die Crawlern absichtlich nicht mit 200 antworten.
+# Wird nach dem ersten echten Lauf anhand der Befunde befüllt — was hier steht,
+# ist kein toter Link, sondern eine Seite mit Bot-Abwehr.
