@@ -11,7 +11,7 @@ name: Quality
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, feat/quality-gate]  # TEMPORÄR für den Erstlauf
   schedule:
     # Versetzt zu den drei Schwesterseiten, damit nie vier Crawls gleichzeitig laufen.
     - cron: "47 5 * * 1"
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: GitHub Pages nach dem Push abwarten
         if: github.event_name == 'push'
-        run: sleep 120
+        run: sleep 20
       - name: lychee
         uses: lycheeverse/lychee-action@v2
         with:
@@ -54,7 +54,7 @@ jobs:
           node-version: "22"
       - name: GitHub Pages nach dem Push abwarten
         if: github.event_name == 'push'
-        run: sleep 120
+        run: sleep 20
       - name: Unlighthouse gegen die Live-Seite
         # Erster Lauf bewusst ohne Budget: erst die Baseline messen, dann in einem
         # Folge-Commit ein Budget festschreiben. Ein geratenes Budget wäre entweder
@@ -71,7 +71,7 @@ jobs:
           node-version: "22"
       - name: GitHub Pages nach dem Push abwarten
         if: github.event_name == 'push'
-        run: sleep 120
+        run: sleep 20
       - name: Playwright und axe nach RUNNER_TEMP installieren
         # Bewusst NICHT ins Repo: dieses Repo bleibt ohne package.json und node_modules.
         run: |
