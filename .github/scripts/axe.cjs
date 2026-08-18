@@ -29,11 +29,14 @@ function summary(line) {
   }
 
   const browser = await chromium.launch();
+  // A context, not browser.newPage(): @axe-core/playwright refuses a page that hangs
+  // directly off the browser ("Please use browser.newContext()"). Measured, not guessed.
+  const context = await browser.newContext();
   let blocking = 0;
   summary('## Barrierefreiheit (axe-core)');
 
   for (const url of urls) {
-    const page = await browser.newPage();
+    const page = await context.newPage();
     try {
       await page.goto(url, { waitUntil: 'load', timeout: 60000 });
       const { violations } = await new AxeBuilder({ page })
