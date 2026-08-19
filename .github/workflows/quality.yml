@@ -39,6 +39,7 @@ jobs:
           # Unterordner war ein Fehlalarm (gemessen 18.08.2026).
           # Browser-Kennung, weil YouTube & Co. nackte Crawler mit 404 abweisen.
           args: >-
+            --root-dir ${{ github.workspace }}
             --user-agent 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
             --accept 200..=206,429
             --no-progress
