@@ -1,3 +1,8 @@
 # Adressen, die Crawlern absichtlich nicht mit 200 antworten.
-# Wird nach dem ersten echten Lauf anhand der Befunde befüllt — was hier steht,
-# ist kein toter Link, sondern eine Seite mit Bot-Abwehr.
+# Das ist Bot-Abwehr, kein toter Link — gemessen 18.08.2026:
+#   linkedin.com        antwortet 999
+#   radissonhotels.com  antwortet 403
+# YouTube braucht kein Ignore mehr, seit der Workflow eine Browser-Kennung sendet
+# (ohne UA: 404, mit UA: 302).
+https://www.linkedin.com/
+https://www.radissonhotels.com/

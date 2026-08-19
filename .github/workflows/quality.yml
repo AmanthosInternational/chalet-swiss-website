@@ -34,10 +34,12 @@ jobs:
       - name: lychee
         uses: lycheeverse/lychee-action@v2
         with:
-          # 429 wird akzeptiert: LinkedIn und Instagram antworten Crawlern mit
-          # Rate-Limit statt mit 200, das ist kein toter Link.
+          # KEIN --base-url: damit loeste lychee relative Links gegen die Site-Wurzel
+          # auf statt neben der Datei, die sie enthaelt — jeder relative Link in einem
+          # Unterordner war ein Fehlalarm (gemessen 18.08.2026).
+          # Browser-Kennung, weil YouTube & Co. nackte Crawler mit 404 abweisen.
           args: >-
-            --base-url ${{ env.SITE_URL }}
+            --user-agent 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
             --accept 200..=206,429
             --no-progress
             --max-concurrency 4
