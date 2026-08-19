@@ -13,7 +13,24 @@ try { console.info('Chalet Swiss IBE v' + IBE_VERSION + ' (city tax brutto)'); }
 
 // dataLayer helper for GTM conversion tracking
 window.dataLayer = window.dataLayer || [];
+// Plausible: dieselbe Event-Taxonomie wie GTM, aber ausschliesslich mit einer
+// abschliessenden Merkmals-Whitelist. Keine IDs, keine Namen, keine E-Mail --
+// booking_id, reservation_id, promo_code und error_message bleiben draussen.
+function plausibleEvent(name, data) {
+  try {
+    window.plausible = window.plausible || function () {
+      (window.plausible.q = window.plausible.q || []).push(arguments);
+    };
+    var props = {};
+    ['location', 'nights', 'step'].forEach(function (k) {
+      if (data && data[k] !== undefined) props[k] = data[k];
+    });
+    window.plausible(name, { props: props });
+  } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
+}
+
 function gtmPush(event, data) {
+  try { plausibleEvent(event, data); } catch (e) { /* nie die Buchung brechen */ }
   var obj = { event: event };
   if (data) { var k = Object.keys(data); for (var i = 0; i < k.length; i++) { obj[k[i]] = data[k[i]]; } }
   window.dataLayer.push(obj);
