@@ -2,7 +2,13 @@
 # Das ist Bot-Abwehr, kein toter Link — gemessen 18.08.2026:
 #   linkedin.com        antwortet 999
 #   radissonhotels.com  antwortet 403
+#   facebook.com        antwortet 400 -- aber NUR MIT Browser-Kennung; ohne sie
+#                       antwortet dieselbe Seite 200 (gemessen 19.08.2026).
+#                       Also genau umgekehrt zu YouTube: die Kennung, die dort
+#                       repariert, bricht hier. Ein Linkfehler ist deshalb erst
+#                       dann echt, wenn er MIT und OHNE Kennung auftritt.
 # YouTube braucht kein Ignore mehr, seit der Workflow eine Browser-Kennung sendet
 # (ohne UA: 404, mit UA: 302).
 https://www.linkedin.com/
 https://www.radissonhotels.com/
+https://www.facebook.com/
