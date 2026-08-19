@@ -67,6 +67,10 @@ jobs:
   a11y:
     name: Barrierefreiheit
     runs-on: ubuntu-latest
+    # Deckel gegen Ausreisser: Der Scan selbst braucht Sekunden. Laeuft der Job
+    # laenger, stimmt etwas mit der Installation nicht, und dann soll er scheitern
+    # statt stundenlang eine Startbahn zu blockieren.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -79,7 +83,14 @@ jobs:
         # Bewusst NICHT ins Repo: dieses Repo bleibt ohne package.json und node_modules.
         run: |
           npm install --prefix "$RUNNER_TEMP/a11y" playwright @axe-core/playwright
-          npx --prefix "$RUNNER_TEMP/a11y" playwright install --with-deps chromium
+          # KEIN --with-deps: Das loest ein vollstaendiges apt-get aus und zieht
+          # CJK- und Symbolschriften nach. Am 19.08.2026 gemessen: 41 Minuten fuer
+          # den Installationsschritt, davon ueber 37 Minuten Warten auf einzelne
+          # Font-Pakete aus dem Ubuntu-Archiv (fonts-wqy-zenhei allein 13m40s).
+          # Der eigentliche axe-Scan dauerte im selben Lauf 8 Sekunden.
+          # Die Chromium-Bibliotheken sind auf ubuntu-latest bereits vorhanden.
+          # Nachgemessen mit dem Fix: Installation 13s, Job gesamt 28s.
+          npx --prefix "$RUNNER_TEMP/a11y" playwright install chromium
       - name: axe-Scan
         env:
           NODE_PATH: ${{ runner.temp }}/a11y/node_modules
