@@ -25,7 +25,17 @@ function plausibleEvent(name, data) {
     ['location', 'nights', 'step'].forEach(function (k) {
       if (data && data[k] !== undefined) props[k] = data[k];
     });
-    window.plausible(name, { props: props });
+    var opts = { props: props };
+    // Umsatz nur an der bestaetigten Buchung. select_offer und begin_checkout
+    // tragen ebenfalls total_price, sind aber kein Erloes -- wer sie mitzaehlt,
+    // meldet jede Angebotsansicht als Umsatz und zaehlt dreifach.
+    // payment_completed waere fachlich richtiger, traegt im Code aber keinen
+    // Betrag; der Umsatz zaehlt deshalb bestaetigte, nicht bezahlte Buchungen.
+    if (name === 'booking_confirmed' && data &&
+        typeof data.total_price === 'number' && data.total_price > 0) {
+      opts.revenue = { amount: data.total_price, currency: data.currency || 'CHF' };
+    }
+    window.plausible(name, opts);
   } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
 }
 
