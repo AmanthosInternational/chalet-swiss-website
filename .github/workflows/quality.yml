@@ -21,6 +21,7 @@ permissions:
 
 env:
   SITE_URL: https://chalet-swiss.ch
+  GSC_TOKEN_FILE: google934323b2771e6a9a.html
 
 jobs:
   links:
@@ -95,3 +96,26 @@ jobs:
         env:
           NODE_PATH: ${{ runner.temp }}/a11y/node_modules
         run: node .github/scripts/axe.cjs "$SITE_URL"
+
+  gsc:
+    name: Search-Console-Verifikation
+    runs-on: ubuntu-latest
+    # Ein Abruf, kein Checkout noetig.
+    timeout-minutes: 5
+    steps:
+      - name: GitHub Pages nach dem Push abwarten
+        if: github.event_name == 'push'
+        run: sleep 120
+      - name: Bestaetigungsdatei muss erreichbar und unveraendert sein
+        run: |
+          url="$SITE_URL/$GSC_TOKEN_FILE"
+          expected="google-site-verification: $GSC_TOKEN_FILE"
+          if ! body=$(curl -fsS --max-time 20 "$url"); then
+            echo "::error::$url ist nicht erreichbar. Google zieht die Property zurueck, wenn die Datei verschwindet — und meldet das niemandem."
+            exit 1
+          fi
+          if [ "$body" != "$expected" ]; then
+            echo "::error::Inhalt von $url weicht ab. Erwartet: $expected"
+            exit 1
+          fi
+          echo "OK: $url"
