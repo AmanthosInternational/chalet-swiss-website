@@ -730,5 +730,29 @@
   <script src="./js/i18n.js" defer></script>
   <script src="./js/app.js" defer></script>
   <script src="./js/booking.js" defer></script>
+  <script>
+    // Die Rechtsseiten liegen als eigene Dateien je Sprache vor (Impressum/Datenschutz
+    // deutsch, Imprint/Privacy englisch). Footer- und Cookie-Hinweis-Links zeigen deshalb
+    // auf die Fassung der gerade aktiven Sprache. Die Sprache haelt js/i18n.js im
+    // localStorage unter chaletswiss_lang und meldet jeden Wechsel per languageChanged.
+    (function () {
+      var PAARE = { './datenschutz.html': './privacy.html', './impressum.html': './imprint.html' };
+      function sync(lang) {
+        var en = lang === 'en';
+        Object.keys(PAARE).forEach(function (de) {
+          var von = en ? de : PAARE[de];
+          var nach = en ? PAARE[de] : de;
+          var links = document.querySelectorAll('a[href="' + von + '"]');
+          for (var i = 0; i < links.length; i++) links[i].setAttribute('href', nach);
+        });
+      }
+      var start = 'de';
+      try { start = localStorage.getItem('chaletswiss_lang') || 'de'; } catch (e) {}
+      sync(start);
+      document.addEventListener('languageChanged', function (e) {
+        sync(e && e.detail && e.detail.lang ? e.detail.lang : 'de');
+      });
+    })();
+  </script>
 </body>
 </html>
