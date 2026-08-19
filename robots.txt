@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chalet-swiss.ch/sitemap.xml
