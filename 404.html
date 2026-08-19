@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seite nicht gefunden | Hotel Chalet Swiss Interlaken</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/png" href="./assets/logos/Chalet-Swiss-Logo-Red.png">
+  <meta name="theme-color" content="#8B6F47">
+
+  <!-- Bewusst eigenstaendig gestaltet statt ueber css/style.css: Eine Fehlerseite muss
+       auch dann noch lesbar sein, wenn genau das Stylesheet fehlt, das den Fehler
+       verursacht hat. Aus demselben Grund keine externen Schriften, sondern der
+       System-Stack mit Georgia als Serifen-Fallback.
+       Zweisprachig in einer Datei: GitHub Pages liefert fuer jeden unbekannten Pfad
+       genau diese eine Seite, ein Sprachumschalter wie auf den Rechtsseiten waere
+       hier also wirkungslos. -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #FAF8F5;
+      color: #2C2C2C;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .wrapper { max-width: 480px; }
+    .code {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 4rem;
+      color: #8B6F47;
+      line-height: 1;
+      margin-bottom: .75rem;
+    }
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: .75rem;
+    }
+    p { color: #2C2C2C; margin-bottom: 1.75rem; }
+    .home {
+      display: inline-block;
+      background: #8B6F47;
+      color: #FFFFFF;
+      padding: .85rem 2rem;
+      border-radius: 2px;
+      text-decoration: none;
+      font-size: .95rem;
+      letter-spacing: .02em;
+    }
+    .home:hover, .home:focus { background: #6f5939; }
+    .en {
+      margin-top: 2.25rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #E5E0D8;
+      font-size: .95rem;
+    }
+    .en h2 { font-size: 1rem; font-weight: 600; margin-bottom: .4rem; }
+    .kontakt { margin-top: 2rem; font-size: .9rem; }
+    /* Unterstrichen, nicht nur eingefaerbt: Ein Verweis, der sich allein durch die
+       Farbe abhebt, ist fuer farbfehlsichtige Leser keiner. */
+    .kontakt a, .en a { color: #8B6F47; text-decoration: underline; }
+  </style>
+
+  <!-- Sentry: error + performance monitoring. Config in js/sentry-init.js -->
+  <script src="https://browser.sentry-cdn.com/10.68.0/bundle.tracing.replay.min.js"
+          integrity="sha384-XaWdQ+280/sFZD3fFzNgO2vpH3FjdOqMQiQBMoyG5itU99/FvV8v4lrmQNIF4Mau"
+          crossorigin="anonymous" defer></script>
+  <script src="./js/sentry-init.js" defer></script>
+
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.io/js/pa-9YDotNQpXnbt0khcohnib.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+  <script>
+    // Plausible zaehlt Fehlerseiten nicht von allein, deshalb hier von Hand.
+    // Nur der Pfad, nie die volle URL: Query-Parameter koennen Namen oder
+    // Buchungsnummern enthalten.
+    plausible('404', { props: { path: location.pathname } });
+  </script>
+</head>
+<body>
+
+  <main class="wrapper">
+    <div class="code">404</div>
+    <h1>Diese Seite gibt es nicht</h1>
+    <p>Der Link ist veraltet oder es hat sich ein Tippfehler eingeschlichen.</p>
+    <a class="home" href="/">Zur Startseite</a>
+
+    <div class="en" lang="en">
+      <h2>Page not found</h2>
+      <p>The link is outdated or contains a typo. <a href="/">Back to the homepage</a></p>
+    </div>
+
+    <p class="kontakt">
+      Sie suchen etwas Bestimmtes? Schreiben Sie uns an
+      <a href="mailto:chaletswiss@amanthos.com">chaletswiss@amanthos.com</a>
+      oder rufen Sie an: <a href="tel:+41415627660">+41 41 562 76 60</a>
+    </p>
+  </main>
+
+</body>
+</html>
