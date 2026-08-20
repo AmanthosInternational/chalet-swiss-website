@@ -6,15 +6,15 @@
 /* ---------- CSS Custom Properties ---------- */
 :root {
   /* Light palette */
-  --color-primary: #8B6F47;
+  --color-primary: #8A6E46;
   --color-primary-light: #A68B5B;
-  --color-accent: #8B6F47;
+  --color-accent: #8A6E46;
   --color-accent-light: #A68B5B;
   --color-bg: #FAF8F5;
   --color-bg-alt: #F2EDE6;
   --color-surface: #FFFFFF;
   --color-text: #2C2C2C;
-  --color-text-muted: #7A7A7A;
+  --color-text-muted: #727272;
   --color-white: #FFFFFF;
   --color-border: rgba(0,0,0,.08);
   --color-success: #059669;
@@ -2497,3 +2497,10 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44,44,44,.85); }
 @keyframes spin-inline {
   to { transform: rotate(360deg); }
 }
+
+/* Links im Fliesstext der Rechtsseiten muessen ohne Farbe erkennbar sein
+   (WCAG 1.4.1, axe link-in-text-block). Global gilt text-decoration:none;
+   im Fliesstext ist die Unterstreichung das einzige nichtfarbliche Merkmal. */
+.legal-container p a,
+.legal-container li a,
+.legal-container address a{text-decoration:underline;text-underline-offset:.15em}
