@@ -715,19 +715,23 @@ function buildGuestsDropdown() {
   });
 }
 
+// HCSI (Chalet Swiss): höchste Belegung = 4 (Family Room 4 Bed, 1-4).
+// Immer mind. 1 Erwachsener; Kinder = Max - Erwachsene; Total <= Max.
 function updateGuestCount(type, dir) {
+  var MAX = 4;
+  var adults = parseInt(guestInput.value) || 1;
+  var children = parseInt(childInput.value) || 0;
   if (type === 'adults') {
-    var val = parseInt(guestInput.value) || 1;
-    var newVal = Math.max(1, Math.min(6, val + dir));
-    guestInput.value = newVal;
+    var na = Math.max(1, Math.min(MAX, adults + dir));
+    if (na + children > MAX) na = Math.max(1, MAX - children);
+    guestInput.value = na;
     var el = document.getElementById('adultCount');
-    if (el) el.textContent = newVal;
+    if (el) el.textContent = na;
   } else {
-    var val = parseInt(childInput.value) || 0;
-    var newVal = Math.max(0, Math.min(2, val + dir));
-    childInput.value = newVal;
+    var nc = Math.max(0, Math.min(MAX - adults, children + dir));
+    childInput.value = nc;
     var el = document.getElementById('childCount');
-    if (el) el.textContent = newVal;
+    if (el) el.textContent = nc;
   }
   updateGuestsLabel();
 }
