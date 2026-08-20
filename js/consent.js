@@ -148,6 +148,11 @@ function anwenden(zustand) {
       clearGoogleCookies();
     }
   } catch (e) { /* Consent darf die Seite nie brechen */ }
+  // meta.js haengt an dieser Meldung: es laedt mit defer und damit NACH
+  // dem synchronen Erstlauf, bekommt spaetere Wechsel aber sofort mit.
+  try {
+    document.dispatchEvent(new CustomEvent('am:consent-change', { detail: { state: zustand } }));
+  } catch (e) { /* nie werfen */ }
 }
 
 // 3. Gespeicherte Wahl anwenden, bevor gtag.js ueberhaupt ausgefuehrt wird.
