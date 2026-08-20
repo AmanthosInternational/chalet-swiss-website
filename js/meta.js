@@ -21,9 +21,11 @@
 (function () {
   'use strict';
 
-  // Leer = Pixel aus. Sobald die Datenquelle im Business Manager existiert, hier
-  // die ID eintragen; der Rest der Datei bleibt unveraendert.
-  var PIXEL_ID = '';
+  // Datenquelle "amanthos pixel" im Business-Portfolio Amanthos (548121105749958).
+  // EIN Pixel fuer alle vier Domains, nicht vier einzelne: Bei geschaetzt unter
+  // 50 Conversions pro Woche und Haus kaeme keines davon je aus der Lernphase.
+  // Leert man die Konstante, ist dieser Teil wieder vollstaendig still.
+  var PIXEL_ID = '516536478992095';
 
   var STORE_KEY = 'am_click_ids';
   var MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;  // Google-Ads-Klickfenster
