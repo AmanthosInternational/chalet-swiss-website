@@ -89,6 +89,17 @@
     window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
     plausible.init()
   </script>
+
+  <!-- Google Analytics 4 (eigene Property). consent.js MUSS synchron und vor dem
+       gtag-Loader stehen, sonst konfiguriert sich gtag ohne Consent-Defaults. -->
+  <script src="./js/consent.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKDQLKRSJF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XKDQLKRSJF');
+  </script>
 </head>
 <body>
 
@@ -140,9 +151,10 @@
       </p>
       <p>
         <strong>Local storage and cookies:</strong> We always use technically necessary
-        entries in your browser's local storage (language preference, cookie notice). In
-        addition, the analytics and marketing services listed under section 4 set cookies,
-        subject to your consent.
+        entries in your browser's local storage (language preference, your choice about
+        audience measurement). In addition, the Google Analytics 4 audience measurement
+        listed under section 4 sets cookies: in the EEA and the United Kingdom only after
+        you have given your consent, in Switzerland until you object.
       </p>
 
       <h2>3. Error and performance monitoring</h2>
@@ -169,8 +181,8 @@
       <p>
         During the booking process we additionally count individual steps, such as the
         availability search, viewing offers and completing a booking. What is transmitted
-        is the property concerned, the respective step, and, for a confirmed booking, its
-        total amount. Booking and reservation numbers, names, email addresses, travel
+        to Plausible is the property concerned, the respective step, and, for a confirmed
+        booking, its total amount. Booking and reservation numbers, names, email addresses, travel
         dates, guest numbers and voucher codes are not transmitted.
       </p>
       <p>
@@ -179,11 +191,27 @@
         file and the path of the error page. The contents of the forms are not transmitted.
       </p>
       <p>
-        <strong>Google Tag Manager, Google Analytics and Google Ads:</strong> Google
-        Analytics and Google Ads features provided by Google Ireland Limited are embedded
-        via Google Tag Manager. These services set cookies and collect information about
-        your visit in order to evaluate use of the website and measure the effectiveness of
-        advertising.
+        <strong>Google Analytics 4:</strong> We use Google Analytics 4, provided by Google
+        Ireland Limited, to measure reach and website use. The service sets the cookies
+        <code>_ga</code> and <code>_ga_&lt;identifier&gt;</code> and collects information
+        about your visit, such as the pages you open, your browser and your device. We use
+        Consent Mode v2: in the EEA and the United Kingdom we only measure once you have
+        agreed in the cookie notice. In Switzerland we measure on the basis of our
+        legitimate interest; you may object at any time. Advertising features and Google
+        Signals are permanently switched off and there is no link to Google Ads. The data
+        is retained for 14 months.
+      </p>
+      <p>
+        During the booking process we transmit the same steps to Google Analytics as to
+        Plausible, plus the names of the room type and the selected rate, the number of
+        adults, the total amount of a confirmed booking and the booking number as the
+        transaction ID, so that revenue is not counted twice. Names, email addresses,
+        telephone numbers, travel dates, voucher codes, error texts and form contents are
+        not transmitted.
+      </p>
+      <p>
+        Your choice applies to this browser and can be changed at any time:
+        <a href="#" onclick="return window.amConsent ? (amConsent.open(), false) : false">open the cookie notice again</a>.
       </p>
 
       <h2>5. Recipients and processors</h2>
@@ -198,7 +226,7 @@
         <li>Render Services, Inc. (USA) — hosting of the booking interface</li>
         <li>Functional Software, Inc. (Sentry) — error and performance monitoring, processed in the EU region</li>
         <li>Plausible Insights OÜ (Estonia) — cookie-free audience measurement</li>
-        <li>Google Ireland Limited and Google LLC (USA) — Tag Manager, Analytics, Ads as well as the Google Maps mapping service and Google Fonts, which are loaded from Google servers when the website is opened</li>
+        <li>Google Ireland Limited and Google LLC (USA) — Google Analytics 4 as well as the Google Maps mapping service and Google Fonts, which are loaded from Google servers when the website is opened</li>
       </ul>
       <p>
         Where service providers are based outside Switzerland or the EEA, transfers take

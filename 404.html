@@ -86,6 +86,19 @@
     // Buchungsnummern enthalten.
     plausible('404', { props: { path: location.pathname } });
   </script>
+
+  <!-- Google Analytics 4 (eigene Property). consent.js MUSS synchron und vor dem
+       gtag-Loader stehen, sonst konfiguriert sich gtag ohne Consent-Defaults.
+       Absolute Pfade wie beim Rest dieser Seite: GitHub Pages liefert die 404
+       fuer jeden beliebigen Pfad aus, relative Verweise gingen dort ins Leere. -->
+  <script src="/js/consent.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKDQLKRSJF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XKDQLKRSJF');
+  </script>
 </head>
 <body>
 

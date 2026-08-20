@@ -89,6 +89,17 @@
     window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
     plausible.init()
   </script>
+
+  <!-- Google Analytics 4 (eigene Property). consent.js MUSS synchron und vor dem
+       gtag-Loader stehen, sonst konfiguriert sich gtag ohne Consent-Defaults. -->
+  <script src="./js/consent.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKDQLKRSJF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XKDQLKRSJF');
+  </script>
 </head>
 <body>
 
@@ -141,9 +152,11 @@
       </p>
       <p>
         <strong>Lokale Speicherung und Cookies:</strong> Technisch notwendige Einträge im
-        lokalen Speicher Ihres Browsers (Spracheinstellung, Cookie-Hinweis) verwenden wir
-        immer. Darüber hinaus setzen die unter Ziffer 4 genannten Analyse- und
-        Marketing-Dienste Cookies, sofern Sie dem zustimmen.
+        lokalen Speicher Ihres Browsers (Spracheinstellung, Ihre Wahl zur
+        Reichweitenmessung) verwenden wir immer. Darüber hinaus setzt die unter Ziffer 4
+        genannte Reichweitenmessung mit Google Analytics 4 Cookies: im EWR und im
+        Vereinigten Königreich erst nach Ihrer Zustimmung, in der Schweiz bis zu Ihrem
+        Widerspruch.
       </p>
 
       <h2>3. Fehler- und Leistungsüberwachung</h2>
@@ -173,8 +186,8 @@
       <p>
         Im Buchungsvorgang zählen wir zusätzlich einzelne Schritte, etwa die
         Verfügbarkeitssuche, das Ansehen von Angeboten und den Abschluss einer Buchung.
-        Übermittelt werden dabei das betroffene Haus, der jeweilige Bearbeitungsschritt
-        und bei einer bestätigten Buchung deren Gesamtbetrag. Buchungs- und
+        An Plausible übermittelt werden dabei das betroffene Haus, der jeweilige
+        Bearbeitungsschritt und bei einer bestätigten Buchung deren Gesamtbetrag. Buchungs- und
         Reservierungsnummern, Namen, E-Mail-Adressen, Reisedaten, Gästezahlen und
         Gutscheincodes werden nicht übermittelt.
       </p>
@@ -185,11 +198,27 @@
         Fehlerseite. Die Inhalte der Formulare werden nicht übermittelt.
       </p>
       <p>
-        <strong>Google Tag Manager, Google Analytics und Google Ads:</strong> Über den
-        Google Tag Manager werden Google Analytics und Google-Ads-Funktionen der Google
-        Ireland Limited eingebunden. Diese Dienste setzen Cookies und erheben Angaben zu
-        Ihrem Besuch, um die Nutzung der Website auszuwerten und die Wirksamkeit von
-        Werbemassnahmen zu messen.
+        <strong>Google Analytics 4:</strong> Zur Reichweiten- und Nutzungsmessung setzen wir
+        Google Analytics 4 der Google Ireland Limited ein. Der Dienst setzt die Cookies
+        <code>_ga</code> und <code>_ga_&lt;Kennung&gt;</code> und erfasst Angaben zu Ihrem
+        Besuch, etwa aufgerufene Seiten sowie Browser und Gerät. Wir nutzen den Consent
+        Mode v2: Im EWR und im Vereinigten Königreich messen wir erst, wenn Sie im
+        Cookie-Hinweis zustimmen. In der Schweiz messen wir auf Grundlage unseres
+        berechtigten Interesses; Sie können jederzeit widersprechen. Werbefunktionen und
+        Google Signals sind dauerhaft abgeschaltet, eine Verknüpfung mit Google Ads besteht
+        nicht. Die Daten werden 14 Monate aufbewahrt.
+      </p>
+      <p>
+        Im Buchungsvorgang übermitteln wir an Google Analytics dieselben Schritte wie an
+        Plausible, dazu die Bezeichnung von Zimmertyp und gewählter Rate, die Zahl der
+        Erwachsenen, den Gesamtbetrag einer bestätigten Buchung und die Buchungsnummer als
+        Transaktionskennung, damit ein Umsatz nicht doppelt gezählt wird. Namen,
+        E-Mail-Adressen, Telefonnummern, Reisedaten, Gutscheincodes, Fehlertexte und
+        Formularinhalte werden nicht übermittelt.
+      </p>
+      <p>
+        Ihre Wahl gilt für diesen Browser und lässt sich jederzeit ändern:
+        <a href="#" onclick="return window.amConsent ? (amConsent.open(), false) : false">Cookie-Hinweis erneut öffnen</a>.
       </p>
 
       <h2>5. Empfänger und Auftragsbearbeiter</h2>
@@ -204,7 +233,7 @@
         <li>Render Services, Inc. (USA) — Hosting der Buchungsschnittstelle</li>
         <li>Functional Software, Inc. (Sentry) — Fehler- und Leistungsüberwachung, Verarbeitung in der EU-Region</li>
         <li>Plausible Insights OÜ (Estland) — Reichweitenmessung ohne Cookies</li>
-        <li>Google Ireland Limited und Google LLC (USA) — Tag Manager, Analytics, Ads sowie Kartendienst Google Maps und Schriftarten (Google Fonts), die beim Aufruf der Website von Google-Servern geladen werden</li>
+        <li>Google Ireland Limited und Google LLC (USA) — Google Analytics 4 sowie Kartendienst Google Maps und Schriftarten (Google Fonts), die beim Aufruf der Website von Google-Servern geladen werden</li>
       </ul>
       <p>
         Bei Dienstleistern mit Sitz ausserhalb der Schweiz bzw. des EWR erfolgt die

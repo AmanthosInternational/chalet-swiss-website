@@ -11,7 +11,8 @@ var API_BASE = window.CHALETSWISS_API_BASE || 'https://amanthos-website-api.onre
 var PROPERTY_ID = 'HCSI';
 try { console.info('Chalet Swiss IBE v' + IBE_VERSION + ' (city tax brutto)'); } catch (e) {}
 
-// dataLayer helper for GTM conversion tracking
+// Warteschlange von gtag.js. Der GTM-Container ist weg; die Zeile bleibt, weil
+// gtag.js denselben window.dataLayer benutzt und ihn vorfinden muss.
 window.dataLayer = window.dataLayer || [];
 // Plausible: dieselbe Event-Taxonomie wie GTM, aber ausschliesslich mit einer
 // abschliessenden Merkmals-Whitelist. Keine IDs, keine Namen, keine E-Mail --
@@ -39,11 +40,97 @@ function plausibleEvent(name, data) {
   } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
 }
 
+// GA4: dieselbe Event-Taxonomie, uebersetzt auf die GA4-Standardnamen. Die
+// Parameterliste je Ereignis ist abschliessend -- das data-Objekt wird NIE als
+// Ganzes durchgereicht, sonst wandern check_in, promo_code oder error_message
+// unbemerkt mit. Verboten bleiben Namen, E-Mail, Telefon, Reisedaten,
+// Gutscheincodes, Fehlertexte und jeder Formularinhalt; einzige zulaessige
+// Kennung ist transaction_id (die Buchungsnummer, damit ein Umsatz nicht
+// doppelt gezaehlt wird).
+function ga4Event(name, data) {
+  try {
+    if (typeof window.gtag !== 'function') return;
+    var d = data || {};
+    var waehrung = d.currency || 'CHF';
+    switch (name) {
+      case 'search_availability':
+        // guests ist die Zahl der Erwachsenen, keine Personenangabe; children
+        // und die Reisedaten bleiben bewusst draussen.
+        window.gtag('event', 'search_availability', {
+          location: d.location,
+          guests: d.guests
+        });
+        break;
+      case 'view_offers':
+        window.gtag('event', 'view_item_list', {
+          item_list_name: d.location,
+          offer_count: d.offer_count
+        });
+        break;
+      case 'select_offer':
+        window.gtag('event', 'select_item', {
+          currency: waehrung,
+          items: [{
+            item_name: d.rate_name,
+            item_category: d.unit_type,
+            item_variant: d.category,
+            price: d.total_price,
+            quantity: 1
+          }]
+        });
+        break;
+      case 'begin_checkout':
+        window.gtag('event', 'begin_checkout', {
+          currency: waehrung,
+          value: (d.total_price || 0) + (d.extras_total || 0),
+          items: [{ item_name: d.rate_name, quantity: 1 }]
+        });
+        break;
+      case 'submit_booking':
+        window.gtag('event', 'submit_booking', {
+          location: d.location,
+          rate_name: d.rate_name
+        });
+        break;
+      case 'booking_confirmed':
+        window.gtag('event', 'purchase', {
+          transaction_id: d.booking_id,
+          value: d.total_price,
+          currency: waehrung
+        });
+        break;
+      case 'payment_initiated':
+        window.gtag('event', 'payment_initiated', { transaction_id: d.booking_id });
+        break;
+      case 'payment_completed':
+        // Bewusst ohne value: der Umsatz zaehlt genau einmal, am purchase.
+        // Dieselbe Entscheidung wie im Plausible-Revenue-Kommentar oben.
+        window.gtag('event', 'payment_completed', { transaction_id: d.booking_id });
+        break;
+      case 'booking_cancelled_no_payment':
+        // reservation_id des Callsites bleibt draussen, nur die Buchungsnummer.
+        window.gtag('event', 'booking_cancelled_no_payment', { transaction_id: d.booking_id });
+        break;
+      case 'booking_error':
+        // Kein error_message: Freitext kann Eingaben des Gastes enthalten.
+        window.gtag('event', 'booking_error', { step: d.step });
+        break;
+      case 'promo_code_applied':
+        // Ohne Parameter: Gutscheincodes verlassen den Browser nicht.
+        window.gtag('event', 'promo_code_applied');
+        break;
+      default:
+        break;
+    }
+  } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
+}
+
 function gtmPush(event, data) {
   try { plausibleEvent(event, data); } catch (e) { /* nie die Buchung brechen */ }
-  var obj = { event: event };
-  if (data) { var k = Object.keys(data); for (var i = 0; i < k.length; i++) { obj[k[i]] = data[k[i]]; } }
-  window.dataLayer.push(obj);
+  try { ga4Event(event, data); } catch (e) { /* nie die Buchung brechen */ }
+  // dataLayer.push entfernt: gtag.js nutzt denselben dataLayer, ein
+  // {event:...}-Push wuerde Ereignisse doppelt ausloesen (GTM ist weg, der
+  // Transport ist tot).
 }
 
 var selectedOffer = null;
