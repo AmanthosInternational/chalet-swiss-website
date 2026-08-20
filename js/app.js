@@ -446,17 +446,10 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'ArrowRight' && lightboxNext) lightboxNext.click();
 });
 
-// ========== COOKIE BANNER ==========
-var cookieBanner = document.getElementById('cookieBanner');
-var cookieAccept = document.getElementById('cookieAccept');
-if (cookieBanner && !localStorage.getItem('cookies_accepted')) {
-  cookieBanner.style.display = 'block';
-}
-if (cookieAccept) {
-  cookieAccept.addEventListener('click', function () {
-    localStorage.setItem('cookies_accepted', '1');
-    if (cookieBanner) cookieBanner.style.display = 'none';
-  });
-}
+// Der Cookie-Hinweis liegt jetzt vollstaendig in js/consent.js: Er entscheidet
+// ueber die Messung, muss deshalb vor gtag.js laufen und kann nicht in einem
+// per defer geladenen Skript stehen. Der alte Schluessel cookies_accepted wird
+// bewusst weder gelesen noch geloescht -- er stand fuer "keine
+// Tracking-Cookies" und ist keine Analytics-Einwilligung.
 
 })();
