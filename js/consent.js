@@ -39,7 +39,7 @@ var OPT_IN_REGIONEN = ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI',
 var TEXTE = {
   de: {
     label: 'Hinweis zur Reichweitenmessung',
-    text: 'Wir messen die Nutzung dieser Website mit Google Analytics 4 und setzen daf&uuml;r Cookies. Sie k&ouml;nnen die Messung ablehnen. Ihre Wahl gilt f&uuml;r diesen Browser und l&auml;sst sich jederzeit &auml;ndern.',
+    text: 'Wir messen die Nutzung dieser Website mit Google Analytics 4 und den Erfolg unserer Werbung mit dem Meta-Pixel. Den Meta-Pixel laden wir erst nach Ihrer Zustimmung. Ihre Wahl gilt f&uuml;r diesen Browser und l&auml;sst sich jederzeit &auml;ndern.',
     accept: 'Akzeptieren',
     deny: 'Ablehnen',
     link: 'Datenschutz',
@@ -47,7 +47,7 @@ var TEXTE = {
   },
   en: {
     label: 'Audience measurement notice',
-    text: 'We measure how this website is used with Google Analytics 4, which sets cookies. You can decline. Your choice applies to this browser and can be changed at any time.',
+    text: 'We measure how this website is used with Google Analytics 4, and how our advertising performs with the Meta pixel. The Meta pixel only loads once you agree. Your choice applies to this browser and can be changed at any time.',
     accept: 'Accept',
     deny: 'Decline',
     link: 'Privacy policy',
