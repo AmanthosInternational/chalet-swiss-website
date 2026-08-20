@@ -131,6 +131,7 @@ function gtmPush(event, data) {
   // dataLayer.push entfernt: gtag.js nutzt denselben dataLayer, ein
   // {event:...}-Push wuerde Ereignisse doppelt ausloesen (GTM ist weg, der
   // Transport ist tot).
+  try { if (window.amMeta) window.amMeta.event(event, data); } catch (e) { /* nie die Buchung brechen */ }
 }
 
 var selectedOffer = null;
@@ -1388,6 +1389,21 @@ if (confirmBtn) {
       },
       comment: commentParts.join(' | ').replace(/\| $/,'').trim(),
     };
+
+    // Klick-IDs mitschicken, damit der Server die Buchung der Anzeige
+
+    // zuordnen kann. Ohne Einwilligung liefert tracking() null und das
+
+    // Feld entfaellt — der Server sieht dann nichts und tut nichts.
+
+    try {
+
+      var klickIds = window.amMeta && window.amMeta.tracking();
+
+      if (klickIds) { payload.tracking = klickIds; }
+
+    } catch (e) { /* nie die Buchung brechen */ }
+
 
     fetch(API_BASE + '/api/bookings', {
       method: 'POST',
