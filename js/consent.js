@@ -61,7 +61,7 @@ var TEXTE = {
 var STIL = [
   '.am-consent{position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#2C2C2C;color:#FAF8F5;padding:1rem 1.25rem;font:400 .9rem/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;box-shadow:0 -2px 12px rgba(0,0,0,.25)}',
   '.am-consent-inner{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;justify-content:space-between}',
-  '.am-consent-text{margin:0;flex:1 1 20rem}',
+  '.am-consent-text{margin:0;flex:1 1 20rem;color:#FAF8F5}',
   '.am-consent-actions{display:flex;gap:.6rem;flex-wrap:wrap}',
   '.am-consent-btn{font:inherit;min-width:9rem;padding:.6rem 1.4rem;border:1px solid #FAF8F5;border-radius:2px;background:transparent;color:#FAF8F5;cursor:pointer}',
   '.am-consent-btn:hover,.am-consent-btn:focus{background:#FAF8F5;color:#2C2C2C}',

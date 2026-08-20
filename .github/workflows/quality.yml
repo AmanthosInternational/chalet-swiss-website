@@ -95,7 +95,17 @@ jobs:
       - name: axe-Scan
         env:
           NODE_PATH: ${{ runner.temp }}/a11y/node_modules
-        run: node .github/scripts/axe.cjs "$SITE_URL"
+        # Auch die Rechtsseiten, nicht nur die Startseite. Bis 21.08.2026 lief der
+        # Scan gegen "$SITE_URL" allein; die vier Rechtsseiten waren nie geprueft und
+        # trugen zusammen 98 Verstoesse, darunter den kompletten Fliesstext der
+        # Datenschutzerklaerung bei 4.04:1. Gruen hiess bloss: kaum gemessen.
+        run: >-
+          node .github/scripts/axe.cjs
+          "$SITE_URL/"
+          "$SITE_URL/datenschutz.html"
+          "$SITE_URL/impressum.html"
+          "$SITE_URL/privacy.html"
+          "$SITE_URL/imprint.html"
 
   gsc:
     name: Search-Console-Verifikation
