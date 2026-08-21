@@ -97,7 +97,11 @@
     // carries that flag — measured 2026-08-21: without the line below the loader
     // returns the stub and replay.min.js is never fetched. Flagging it makes the
     // loader fetch the chunk; the stub stays as the fallback if that fetch fails.
-    if (typeof Sentry.replayIntegration === 'function') {
+    // Kennzeichen des Platzhalters: replayIntegration da, getReplay fehlt —
+    // replay.min.js setzt beide. So greift die Markierung nur dann, wenn sie
+    // noetig ist, und nicht mehr, falls je wieder ein Bundle mit echtem Replay
+    // eingebunden wird.
+    if (typeof Sentry.replayIntegration === 'function' && typeof Sentry.getReplay !== 'function') {
       Sentry.replayIntegration._isShim = true;
     }
     Sentry.lazyLoadIntegration('replayIntegration').then(function (replayIntegration) {
