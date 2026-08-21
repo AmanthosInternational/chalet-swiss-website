@@ -27,13 +27,6 @@
 
     integrations: [
       Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        // All three default to true — set explicitly so the privacy posture is
-        // stated in the file rather than inherited silently.
-        maskAllText: true,
-        maskAllInputs: true,
-        blockAllMedia: true,
-      }),
     ],
 
     // Core Web Vitals and page load timings. 10% is enough to see trends on a
@@ -87,4 +80,42 @@
 
   // Which of the four sites an event came from, without relying on the URL.
   Sentry.setTag('site', 'chalet-swiss-website');
+
+  // Replay only pays off on the booking funnel (analysing abandoned bookings),
+  // and it is not cheap: the CDN serves replay.min.js uncompressed, 153'207
+  // bytes on the wire — measured 2026-08-21, the chunk is not gzipped no matter
+  // what Accept-Encoding asks for. It therefore loads on the first interaction
+  // with the booking bar, not on every page view. Dropping it out of the bundle
+  // takes every page view from 87 KB to 49 KB gzip.
+  var replayArmed = false;
+  function armReplay() {
+    if (replayArmed) return;
+    replayArmed = true;
+    // The tracing bundle exports a no-op replayIntegration() stub that warns and
+    // does nothing. lazyLoadIntegration() hands back an already present export
+    // unless it is flagged `_isShim`, and in 10.68.0 only the feedback stub
+    // carries that flag — measured 2026-08-21: without the line below the loader
+    // returns the stub and replay.min.js is never fetched. Flagging it makes the
+    // loader fetch the chunk; the stub stays as the fallback if that fetch fails.
+    if (typeof Sentry.replayIntegration === 'function') {
+      Sentry.replayIntegration._isShim = true;
+    }
+    Sentry.lazyLoadIntegration('replayIntegration').then(function (replayIntegration) {
+      Sentry.addIntegration(replayIntegration({
+        // All three default to true — set explicitly so the privacy posture is
+        // stated in the file rather than inherited silently.
+        maskAllText: true,
+        maskAllInputs: true,
+        blockAllMedia: true,
+      }));
+    }).catch(function () {
+      // Ad blocker or network trouble: replay is skipped, error reporting continues.
+    });
+  }
+  var bookingBar = document.getElementById('bookingBar');
+  if (bookingBar) {
+    ['focusin', 'pointerdown'].forEach(function (t) {
+      bookingBar.addEventListener(t, armReplay, { once: true, passive: true });
+    });
+  }
 })();
