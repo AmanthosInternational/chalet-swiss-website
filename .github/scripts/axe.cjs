@@ -69,7 +69,17 @@ async function stylesheetLoaded(page) {
     // first page and stays unscanned everywhere else. Every page is checked as a first
     // visit sees it. A context, not browser.newPage(): @axe-core/playwright refuses a
     // page that hangs directly off the browser ("Please use browser.newContext()").
-    const context = await browser.newContext({ viewport: VIEWPORT });
+    const context = await browser.newContext({
+      viewport: VIEWPORT,
+      // Reduced motion, because the fade-ins are the single biggest source of
+      // phantom findings: axe computes blended colours for half-transparent
+      // elements and reports white-on-white. The sites already ship a
+      // prefers-reduced-motion block that pins [data-animate] to opacity:1, so
+      // this measures the settled state - which is what a visitor ends up seeing.
+      // Measured 21.08.2026 on Living: 23 findings without, 3 with. The 3 are real
+      // and had been hidden behind the animation.
+      reducedMotion: 'reduce',
+    });
     const page = await context.newPage();
     try {
       await page.goto(url, { waitUntil: 'load', timeout: 60000 });

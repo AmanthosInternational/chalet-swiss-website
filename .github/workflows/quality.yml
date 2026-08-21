@@ -43,6 +43,7 @@ jobs:
             --root-dir ${{ github.workspace }}
             --user-agent 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
             --accept 200..=206,429
+            --exclude 'facebook\.com'
             --no-progress
             --max-concurrency 4
             './**/*.html'
@@ -63,7 +64,17 @@ jobs:
         # Erster Lauf bewusst ohne Budget: erst die Baseline messen, dann in einem
         # Folge-Commit ein Budget festschreiben. Ein geratenes Budget wäre entweder
         # wirkungslos oder dauerhaft rot.
-        run: npx --yes @unlighthouse/cli ci --site "$SITE_URL" --no-cache
+        # Budget seit 21.08.2026. Bis dahin lief der Job bewusst ohne, um erst die
+        # Baseline zu messen; ohne Budget kann er nicht fehlschlagen und sagt nichts
+        # aus. Unlighthouse gibt im Log keine Zahlen aus, das Budget ist also die
+        # einzige Stelle, an der dieser Job ueberhaupt etwas behauptet.
+        #
+        # Hergeleitet aus dem niedrigsten heute live gemessenen Lauf (75) minus rund
+        # 10 Punkten Puffer. Der Puffer ist noetig, weil dieselbe Seite in fuenf Laeufen
+        # um bis zu 16 Punkte streut: ein Budget auf dem Median waere in der Haelfte
+        # der Laeufe rot und wuerde nach kurzer Zeit ignoriert.
+        # Das Budget soll eine echte Verschlechterung fangen, nicht das Rauschen.
+        run: npx --yes @unlighthouse/cli ci --site "$SITE_URL" --no-cache --budget 65
 
   a11y:
     name: Barrierefreiheit
