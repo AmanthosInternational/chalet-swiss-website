@@ -161,9 +161,9 @@ var roomData = [
       { key: 'rooms.amenity_wifi', label: 'WLAN', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>' }
     ],
     images: [
-      './assets/images/einzelzimmer/interlaken-einzelzimmer-1.jpg',
-      './assets/images/einzelzimmer/interlaken-einzelzimmer-2.jpg',
-      './assets/images/einzelzimmer/interlaken-einzelzimmer-3.jpg'
+      './assets/images/einzelzimmer/interlaken-einzelzimmer-1.webp',
+      './assets/images/einzelzimmer/interlaken-einzelzimmer-2.webp',
+      './assets/images/einzelzimmer/interlaken-einzelzimmer-3.webp'
     ]
   },
   {
@@ -184,9 +184,9 @@ var roomData = [
       { key: 'rooms.amenity_wifi', label: 'WLAN', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>' }
     ],
     images: [
-      './assets/images/standard-doppel/interlaken-standard-doppelzimmer-1.jpg',
-      './assets/images/standard-doppel/interlaken-standard-doppelzimmer-2.jpg',
-      './assets/images/standard-doppel/interlaken-standard-doppelzimmer-3.jpg'
+      './assets/images/standard-doppel/interlaken-standard-doppelzimmer-1.webp',
+      './assets/images/standard-doppel/interlaken-standard-doppelzimmer-2.webp',
+      './assets/images/standard-doppel/interlaken-standard-doppelzimmer-3.webp'
     ]
   },
   {
@@ -207,11 +207,11 @@ var roomData = [
       { key: 'rooms.amenity_wifi', label: 'WLAN', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>' }
     ],
     images: [
-      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-1.jpg',
-      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-2.jpg',
-      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-3.jpg',
-      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-4.jpg',
-      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-5.jpg'
+      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-1.webp',
+      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-2.webp',
+      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-3.webp',
+      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-4.webp',
+      './assets/images/superior-doppel/interlaken-superior-doppelzimmer-5.webp'
     ]
   },
   {
@@ -232,11 +232,11 @@ var roomData = [
       { key: 'rooms.amenity_wifi', label: 'WLAN', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>' }
     ],
     images: [
-      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_45.jpg',
-      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_67.jpg',
-      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_85.jpg',
-      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_102.jpg',
-      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_112.jpg'
+      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_45.webp',
+      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_67.webp',
+      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_85.webp',
+      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_102.webp',
+      './assets/images/superior-twin-balcony/Interlaken_Dengler_Matthias_112.webp'
     ]
   },
   {
@@ -257,9 +257,9 @@ var roomData = [
       { key: 'rooms.amenity_wifi', label: 'WLAN', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>' }
     ],
     images: [
-      './assets/images/family-3/Interlaken_Dengler_Matthias_17.jpg',
-      './assets/images/family-3/Interlaken_Dengler_Matthias_27.jpg',
-      './assets/images/family-3/Interlaken_Dengler_Matthias_50.jpg'
+      './assets/images/family-3/Interlaken_Dengler_Matthias_17.webp',
+      './assets/images/family-3/Interlaken_Dengler_Matthias_27.webp',
+      './assets/images/family-3/Interlaken_Dengler_Matthias_50.webp'
     ]
   },
   {
@@ -280,11 +280,11 @@ var roomData = [
       { key: 'rooms.amenity_wifi', label: 'WLAN', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><circle cx="12" cy="20" r="1"/></svg>' }
     ],
     images: [
-      './assets/images/family-4/interlaken-familienzimmer-4-1.jpg',
-      './assets/images/family-4/interlaken-familienzimmer-4-2.jpg',
-      './assets/images/family-4/interlaken-familienzimmer-4-3.jpg',
-      './assets/images/family-4/interlaken-familienzimmer-4-4.jpg',
-      './assets/images/family-4/interlaken-familienzimmer-4-5.jpg'
+      './assets/images/family-4/interlaken-familienzimmer-4-1.webp',
+      './assets/images/family-4/interlaken-familienzimmer-4-2.webp',
+      './assets/images/family-4/interlaken-familienzimmer-4-3.webp',
+      './assets/images/family-4/interlaken-familienzimmer-4-4.webp',
+      './assets/images/family-4/interlaken-familienzimmer-4-5.webp'
     ]
   }
 ];
