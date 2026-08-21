@@ -74,7 +74,24 @@ jobs:
         # um bis zu 16 Punkte streut: ein Budget auf dem Median waere in der Haelfte
         # der Laeufe rot und wuerde nach kurzer Zeit ignoriert.
         # Das Budget soll eine echte Verschlechterung fangen, nicht das Rauschen.
-        run: npx --yes @unlighthouse/cli ci --site "$SITE_URL" --no-cache --budget 65
+        run: npx --yes @unlighthouse/cli ci --site "$SITE_URL" --no-cache --config-file ./unlighthouse.config.mjs
+        # Unlighthouse gibt im Log keine Zahlen aus, nur "finished scanning". Ohne die
+        # folgenden Zeilen sieht man nie, wie die Seiten tatsaechlich abgeschnitten haben,
+        # und ein gruener Job sagt nur, dass er gelaufen ist.
+      - name: Messwerte in die Zusammenfassung schreiben
+        if: always()
+        run: |
+          f=.unlighthouse/ci-result.json
+          [ -f "$f" ] || { echo "kein Report vorhanden" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          {
+            echo "## Web Vitals"
+            echo ""
+            echo "| Seite | Performance | A11y | Best Practices | SEO |"
+            echo "|---|---|---|---|---|"
+            node -e 'const r=require("./.unlighthouse/ci-result.json");
+              const p=n=>Math.round((n??0)*100);
+              for (const x of r) console.log(`| ${x.path} | ${p(x.performance)} | ${p(x.accessibility)} | ${p(x["best-practices"])} | ${p(x.seo)} |`);'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   a11y:
     name: Barrierefreiheit
