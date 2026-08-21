@@ -189,9 +189,13 @@
 
   try {
     speichern();
-    pixelLaden();
-    // consent.js meldet jede Aenderung; meta.js laedt mit defer und damit NACH
-    // dem synchronen Erstlauf, deshalb oben zusaetzlich der Direktabruf.
+    // Der Pixel laedt NUR nach erteilter Einwilligung. Schon das Anfordern von
+    // fbevents.js uebertraegt IP, User-Agent und Referrer an Meta - das darf erst
+    // geschehen, wenn zugestimmt wurde, so sagt es auch das Banner zu.
+    // Dieser Aufruf greift den Wiederkehrer mit gespeicherter Zustimmung ab;
+    // consent.js meldet jeden spaeteren Wechsel an den Listener darunter, weil
+    // meta.js mit defer laedt und damit NACH dem synchronen Erstlauf laeuft.
+    if (zustimmung()) { pixelLaden(); }
     document.addEventListener('am:consent-change', function (ev) {
       var state = ev && ev.detail ? ev.detail.state : null;
       if (state === 'granted') {
