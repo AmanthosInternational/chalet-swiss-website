@@ -1038,6 +1038,38 @@ function renderOffers(data) {
   });
 }
 
+// Storno-Bedingung aus Apaleo cancellationFee + Kategorie in lesbaren Text uebersetzen.
+// Frueher zeigte die Karte nur "Bester Preis"/"Flexibel"; der Gast soll die konkrete
+// Bedingung (inkl. Frist) sehen.
+function formatPolicyDate(iso) {
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  var day = ('0' + d.getDate()).slice(-2);
+  var mon = ('0' + (d.getMonth() + 1)).slice(-2);
+  return day + '.' + mon + '.' + d.getFullYear();
+}
+function getCancellationPolicy(offer) {
+  if (!offer) return { free: false, text: '' };
+  if (offer.category === 'Non-Refundable') {
+    return { free: false, text: tFallback('booking.policy_nonref', 'Nicht erstattbar, keine kostenlose Stornierung') };
+  }
+  var fee = offer.cancellationFee || {};
+  var due = fee.dueDateTime ? formatPolicyDate(fee.dueDateTime) : '';
+  if (due) {
+    return { free: true, text: tFallback('booking.policy_free_until', 'Kostenlose Stornierung bis') + ' ' + due };
+  }
+  return { free: true, text: tFallback('booking.policy_free', 'Kostenlose Stornierung') };
+}
+function cancellationPolicyHtml(offer) {
+  var pol = getCancellationPolicy(offer);
+  if (!pol.text) return '';
+  var icon = pol.free
+    ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+    : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  return '<div class="offer-cancel-policy" style="font-size:.78rem;color:var(--color-text-muted);margin:.1rem 0 .4rem;display:flex;align-items:center;gap:.35rem;line-height:1.3;">'
+    + icon + '<span>' + escapeHtml(pol.text) + '</span></div>';
+}
+
 function renderOfferCard(offer, categoryClass, index, isBestPrice) {
   var total = offer.totalGrossAmount || {};
   var perNight = offer.averagePerNight || {};
@@ -1056,6 +1088,7 @@ function renderOfferCard(offer, categoryClass, index, isBestPrice) {
   if (offer._discountBadge) {
     html += '<div class="offer-discount-badge">' + escapeHtml(offer._discountBadge) + '</div>';
   }
+  html += cancellationPolicyHtml(offer);
   html += '<div class="offer-bottom">';
   html += '<div>';
   html += '<div class="offer-pricing">';
