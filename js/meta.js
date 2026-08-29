@@ -6,6 +6,8 @@
  *  1. Klick-IDs merken. Kommt ein Gast ueber eine Anzeige, haengt in der URL ein
  *     `gclid` (Google) oder `fbclid` (Meta). Ohne Erfassung ist beim Abschluss
  *     der Buchung nicht mehr feststellbar, welche Anzeige sie gebracht hat.
+ *     Die UTM-Parameter (Quelle, Medium, Kampagne) laufen im selben Speicher
+ *     mit, damit auch Newsletter- und Blocker-Faelle zuzuordnen bleiben.
  *     Das braucht KEIN Pixel und laeuft deshalb ab sofort.
  *
  *  2. Das Meta-Pixel. Es laedt nur, wenn unten eine PIXEL_ID eingetragen ist.
@@ -29,6 +31,9 @@
 
   var STORE_KEY = 'am_click_ids';
   var MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;  // Google-Ads-Klickfenster
+  // UTM-Parameter teilen sich Speicher, 90-Tage-Fenster, Consent-Regel und
+  // 512er-Kappung mit den Klick-IDs: kein neues Storage-Objekt, keine Cookies.
+  var UTM_FELDER = ['utm_source', 'utm_medium', 'utm_campaign'];
   var geladen = false;
 
   function zustimmung() {
@@ -46,6 +51,11 @@
       ['gclid', 'fbclid'].forEach(function (k) {
         var v = p.get(k);
         if (v) { out[k] = String(v).slice(0, 512); }
+      });
+      UTM_FELDER.forEach(function (k) {
+        var v = p.get(k);
+        if (v) { v = String(v).trim().slice(0, 512); }
+        if (v) { out[k] = v; }
       });
     } catch (e) { /* alte Browser: dann eben nichts */ }
     return out;
@@ -72,11 +82,13 @@
     try {
       var alt = gespeichert();
       var neu = { ts: Date.now() };
-      ['gclid', 'fbclid'].forEach(function (k) {
+      ['gclid', 'fbclid'].concat(UTM_FELDER).forEach(function (k) {
         var v = ausUrlGelesen[k] || alt[k];
         if (v) { neu[k] = v; }
       });
-      if (neu.gclid || neu.fbclid) {
+      // Auch UTM ohne Klick-ID wird gehalten: Newsletter-Klicks und Faelle, in
+      // denen ein Blocker die fbclid schluckt, blieben sonst unsichtbar.
+      if (neu.gclid || neu.fbclid || neu.utm_source || neu.utm_medium || neu.utm_campaign) {
         window.localStorage.setItem(STORE_KEY, JSON.stringify(neu));
       }
     } catch (e) { /* Privatmodus: dann haelt die ID nur diese Seite lang */ }
@@ -99,6 +111,10 @@
     var fbclid = ausUrlGelesen.fbclid || alt.fbclid;
     if (gclid) { out.gclid = gclid; }
     if (fbclid) { out.fbclid = fbclid; }
+    UTM_FELDER.forEach(function (k) {
+      var v = ausUrlGelesen[k] || alt[k];
+      if (v) { out[k] = v; }
+    });
 
     var fbp = cookie('_fbp');
     if (fbp) { out.fbp = fbp; }
@@ -110,7 +126,8 @@
     if (fbc) { out.fbc = fbc; }
 
     // consent allein sagt nichts aus — dann lieber gar nichts mitschicken.
-    return (out.gclid || out.fbclid || out.fbp || out.fbc) ? out : null;
+    return (out.gclid || out.fbclid || out.fbp || out.fbc ||
+            out.utm_source || out.utm_medium || out.utm_campaign) ? out : null;
   }
 
   // ---- Pixel ---------------------------------------------------------------
