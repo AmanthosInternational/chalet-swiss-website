@@ -125,9 +125,35 @@ function ga4Event(name, data) {
   } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
 }
 
+// Google Ads: eigene Kennung, eigener Transport, unabhaengig von GA4. Bis zum
+// 29.08.2026 kamen die Kauf-Conversions dieser Seite als GA4-Import aus einer
+// fremden Property (483757067), die nicht uns gehoert. Dieses Ereignis macht uns
+// davon unabhaengig. Es haengt am booking_confirmed und nicht am
+// payment_completed: die Adyen-Zahlung verlaesst auf dem Handy die Seite und kehrt
+// ohne verwertbaren Zustand zurueck, dort wuerde payment_completed nie feuern.
+// Gezaehlt wird die bestaetigte Reservierung; um Stornos und Nichtanreisen
+// korrigiert der woechentliche ROAS-Report aus echten Apaleo-Umsaetzen.
+var ADS_CONVERSION_ID = 'AW-702540316';
+var ADS_CONVERSION_LABEL = 'WUE8CKyJg4kcEJzU_84C';
+
+function adsEvent(name, data) {
+  try {
+    if (typeof window.gtag !== 'function') return;
+    if (name !== 'booking_confirmed') return;
+    var d = data || {};
+    window.gtag('event', 'conversion', {
+      send_to: ADS_CONVERSION_ID + '/' + ADS_CONVERSION_LABEL,
+      value: d.total_price || 0,
+      currency: d.currency || 'CHF',
+      transaction_id: d.booking_id || ''
+    });
+  } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
+}
+
 function gtmPush(event, data) {
   try { plausibleEvent(event, data); } catch (e) { /* nie die Buchung brechen */ }
   try { ga4Event(event, data); } catch (e) { /* nie die Buchung brechen */ }
+  try { adsEvent(event, data); } catch (e) { /* nie die Buchung brechen */ }
   // dataLayer.push entfernt: gtag.js nutzt denselben dataLayer, ein
   // {event:...}-Push wuerde Ereignisse doppelt ausloesen (GTM ist weg, der
   // Transport ist tot).
