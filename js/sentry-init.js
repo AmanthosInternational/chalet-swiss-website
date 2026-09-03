@@ -17,6 +17,11 @@
   // the users we cannot observe anyway.
   if (typeof Sentry === 'undefined') return;
 
+  // Never report from a local test server. On 29.08.2026 two local runs against a
+  // copy of the Living site created two real issues in its production project. The
+  // DSN ships inside the page, so any copy reports as production unless this stops it.
+  if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/.test(location.hostname)) return;
+
   Sentry.init({
     dsn: 'https://c5f1b0cf21d01775546c75296b8e51d2@o4511372064915456.ingest.de.sentry.io/4511927219257424',
     environment: 'production',
@@ -66,7 +71,27 @@
       'Load failed',
       // Safari/iOS quirks with no actionable stack.
       'Non-Error promise rejection captured',
+      // Extensions that inject into the page. Their frames carry our document URL,
+      // so denyUrls never sees them; only the message identifies them.
+      /Invalid call to runtime\.sendMessage/,
+      /xbrowser is not defined/,
     ],
+
+    // Google Translate rewrites the page and runs its own minified bundle. Sentry
+    // attributes those frames to the document URL, not a Google origin, so denyUrls
+    // cannot reach them (measured on the Living site and on chalet-swiss.ch: frames
+    // like "/:226:382 in Gk" pointing at plain HTML, breadcrumb clicking
+    // "a > font > font" - the <font> tags Translate injects). While a page is
+    // translated its DOM is no longer ours, so errors raised in it cannot be
+    // attributed to our code; dropping that class beats a stream of unactionable
+    // reports. Translate marks the document itself, which is what this reads.
+    beforeSend: function (event) {
+      var wurzel = document.documentElement;
+      if (wurzel && /(^|\s)translated-(ltr|rtl)(\s|$)/.test(wurzel.className || '')) {
+        return null;
+      }
+      return event;
+    },
 
     denyUrls: [
       // Third-party tags: their errors belong to their owners, not to us.
