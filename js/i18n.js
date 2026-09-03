@@ -31,14 +31,21 @@
       var urlLang = urlParams.get('lang');
       if (urlLang && SUPPORTED_LANGS[urlLang.toLowerCase()]) {
         var lang = urlLang.toLowerCase();
-        localStorage.setItem(STORAGE_KEY, lang);
+        // Eigenes try: der umgebende catch gehoert URLSearchParams. Wirft das setItem
+        // bei gesperrtem Storage, wuerde das return uebersprungen und ?lang=xx still
+        // ignoriert. Gleicher Fix wie amanthos-living-website #35.
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (e2) { /* Storage gesperrt */ }
         return lang;
       }
     } catch (e) {}
 
-    // localStorage
-    var stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && SUPPORTED_LANGS[stored]) return stored;
+    // localStorage. Ohne try warf dieser Zugriff bei gesperrtem Storage (Privatmodus,
+    // Cookie-Blocker) einen SecurityError und riss init() mit: keine Uebersetzungen,
+    // kein Sprachwaehler. Auf hotelmulin.ch real gemeldet (Sentry, 9 Events).
+    try {
+      var stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && SUPPORTED_LANGS[stored]) return stored;
+    } catch (e) { /* Storage gesperrt */ }
 
     // Browser language
     var browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
@@ -124,7 +131,7 @@
   function switchLanguage(lang) {
     if (!SUPPORTED_LANGS[lang]) return;
     currentLang = lang;
-    localStorage.setItem(STORAGE_KEY, lang);
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* Storage gesperrt */ }
     loadTranslation(lang, function (dict) {
       applyTranslations(dict);
       updateSelector();
