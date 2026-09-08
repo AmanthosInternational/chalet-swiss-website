@@ -148,12 +148,16 @@
       }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
       /* eslint-enable */
 
-      // Reihenfolge zaehlt: erst widerrufen, dann initialisieren. So sendet das
-      // Pixel nichts und setzt keine Cookies, bis wir ausdruecklich freigeben.
-      window.fbq('consent', 'revoke');
+      // Kein vorsorgliches `consent revoke` vor dem Laden. Beide Aufrufstellen
+      // rufen pixelLaden() nur mit erteilter Zustimmung; der Widerruf war Guertel
+      // und Hosentraeger, und er hat das Pixel stillgelegt: Gemessen am
+      // 08.09.2026 auf amanthosliving.com nahm fbevents.js den Widerruf aus der
+      // Warteschlange, hielt danach an und liess `init`, `PageView` und das
+      // nachgeschobene `grant` ungelesen liegen. Kein Ereignis, kein Cookie,
+      // keine Meldung, obwohl `fbq` geladen war. Ein Widerruf kommt nur noch
+      // ueber den Listener unten, wenn jemand die Zustimmung spaeter zurueckzieht.
       window.fbq('init', PIXEL_ID);
       window.fbq('track', 'PageView');
-      if (zustimmung()) { window.fbq('consent', 'grant'); }
     } catch (e) { /* Werbe-Telemetrie bricht nie eine Seite */ }
   }
 
