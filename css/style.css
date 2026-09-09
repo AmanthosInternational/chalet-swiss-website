@@ -2162,6 +2162,42 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44,44,44,.85); }
 }
 
 /* ==========================================================================
+   FAQ
+   Zwei Spalten am Desktop, eine am Telefon. Kein Akkordeon: der Abschnitt ist
+   dafuer da, zitiert zu werden, und eingeklappter Text ist fuer manche
+   Auswerter kein sichtbarer Text.
+   ========================================================================== */
+.faq-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem 2.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.faq-question {
+  font-family: var(--font-body);
+  font-size: .95rem;
+  font-weight: 700;
+  margin-bottom: .5rem;
+  color: var(--color-text);
+}
+
+.faq-answer {
+  font-size: .85rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
    FINAL CTA
    ========================================================================== */
 .cta-final {
@@ -2453,6 +2489,11 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44,44,44,.85); }
 
   .trust-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .faq-list {
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
