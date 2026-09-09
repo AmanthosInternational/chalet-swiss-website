@@ -17,7 +17,8 @@
     "wellness": "Wellness",
     "location": "Lage",
     "gallery": "Galerie",
-    "book_now": "Jetzt Buchen"
+    "book_now": "Jetzt Buchen",
+    "faq": "Häufige Fragen"
   },
   "hero": {
     "badge": "Interlaken, Berner Oberland",
@@ -54,7 +55,8 @@
     "feature1": "Frühstück inklusive",
     "feature2": "Gratis WLAN",
     "feature3": "Sauna & Wellness",
-    "feature4": "Zentrale Lage"
+    "feature4": "Zentrale Lage",
+    "facts": "Das Haus besteht seit 1862 und bietet heute 52 Zimmer, vom Einzelzimmer bis zum Familienzimmer mit vier Betten. Check-in ab 15:00 Uhr, Check-out bis 11:00 Uhr."
   },
   "rooms": {
     "label": "Unsere Zimmer",
@@ -111,7 +113,8 @@
     "dogs": "Hunde übernachten kostenlos — bitte beachten Sie, dass Hunde im Frühstücksraum nicht erlaubt sind",
     "loyalty": "Treuerabatt: 11% Rabatt auf Ihre Reservation",
     "per_night": "/Nacht",
-    "popular": "Beliebteste Wahl"
+    "popular": "Beliebteste Wahl",
+    "checkin": "Check-in ab 15:00 Uhr, Check-out bis 11:00 Uhr"
   },
   "dining": {
     "label": "Frühstück",
@@ -296,6 +299,26 @@
     "secure_desc": "SSL-verschlüsselte Bezahlung über Adyen. Ihre Daten sind bei uns sicher.",
     "instant_title": "Sofortige Bestätigung",
     "instant_desc": "Erhalten Sie Ihre Buchungsbestätigung sofort per E-Mail. Kein Warten, kein Aufwand."
+  },
+  "faq": {
+    "label": "Häufige Fragen",
+    "title": "Antworten auf die häufigsten Fragen",
+    "q1": "Wie viele Zimmer hat das Hotel Chalet Swiss?",
+    "a1": "Das Hotel Chalet Swiss hat 52 Zimmer. Die Kategorien reichen vom Einzelzimmer über das Doppel- und Twinzimmer bis zum Familienzimmer mit vier Betten.",
+    "q2": "Seit wann gibt es das Hotel Chalet Swiss?",
+    "a2": "Das Haus besteht seit 1862. Es liegt an der Seestrasse 22 in 3800 Interlaken, im Berner Oberland zwischen Thunersee und Brienzersee.",
+    "q3": "Wann sind Check-in und Check-out?",
+    "a3": "Check-in ist ab 15:00 Uhr möglich, Check-out bis 11:00 Uhr.",
+    "q4": "Was ist im Zimmerpreis enthalten?",
+    "a4": "Alle Zimmerpreise beinhalten das Frühstücksbuffet, Servicegebühren, Taxen und die Mehrwertsteuer. WLAN ist im ganzen Haus gratis.",
+    "q5": "Was kostet eine Übernachtung im Hotel Chalet Swiss?",
+    "a5": "Das Einzelzimmer ist ab CHF 99 pro Nacht buchbar, das Doppelzimmer mit Balkon ab CHF 169 pro Nacht und das Familienzimmer mit vier Betten ab CHF 259 pro Nacht. Das Frühstücksbuffet ist in jedem Preis enthalten.",
+    "q6": "Wie weit ist es vom Hotel zum Bahnhof Interlaken West?",
+    "a6": "Der Bahnhof Interlaken West ist in 5 Minuten zu Fuss erreichbar.",
+    "q7": "Welche Ausflugsziele erreiche ich vom Hotel aus?",
+    "a7": "Das Jungfraujoch ist in 45 Minuten mit der Bahn erreichbar, der Harder Kulm in 10 Minuten mit der Standseilbahn und die Schynige Platte in 30 Minuten mit der Zahnradbahn.",
+    "q8": "Gibt es einen Treuerabatt?",
+    "a8": "Auf Ihre Reservation gewähren wir einen Treuerabatt von 11 Prozent."
   },
   "cta": {
     "title": "Bereit für Ihren Aufenthalt in den Alpen?",

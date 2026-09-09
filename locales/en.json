@@ -17,7 +17,8 @@
     "wellness": "Wellness",
     "location": "Location",
     "gallery": "Gallery",
-    "book_now": "Book Now"
+    "book_now": "Book Now",
+    "faq": "FAQ"
   },
   "hero": {
     "badge": "Interlaken, Bernese Oberland",
@@ -54,7 +55,8 @@
     "feature1": "Breakfast Included",
     "feature2": "Free Wi-Fi",
     "feature3": "Sauna & Wellness",
-    "feature4": "Central Location"
+    "feature4": "Central Location",
+    "facts": "The house has existed since 1862 and today offers 52 rooms, from single rooms to family rooms with four beds. Check-in from 15:00, check-out until 11:00."
   },
   "rooms": {
     "label": "Our Rooms",
@@ -111,7 +113,8 @@
     "dogs": "Dogs stay free — please note they are not allowed in the breakfast room",
     "loyalty": "Loyalty discount: 11% off from your reservation",
     "per_night": "/night",
-    "popular": "Most Popular"
+    "popular": "Most Popular",
+    "checkin": "Check-in from 15:00, check-out until 11:00"
   },
   "dining": {
     "label": "Breakfast",
@@ -296,6 +299,26 @@
     "secure_desc": "SSL-encrypted payment via Adyen. Your data is safe with us.",
     "instant_title": "Instant Confirmation",
     "instant_desc": "Receive your booking confirmation immediately by email. No waiting, no hassle."
+  },
+  "faq": {
+    "label": "Frequently asked questions",
+    "title": "Answers to the most common questions",
+    "q1": "How many rooms does Hotel Chalet Swiss have?",
+    "a1": "Hotel Chalet Swiss has 52 rooms. The categories range from single rooms and double or twin rooms to family rooms with four beds.",
+    "q2": "How long has Hotel Chalet Swiss been around?",
+    "a2": "The house has existed since 1862. It is located at Seestrasse 22 in 3800 Interlaken, in the Bernese Oberland between Lake Thun and Lake Brienz.",
+    "q3": "What are the check-in and check-out times?",
+    "a3": "Check-in is possible from 15:00, check-out is until 11:00.",
+    "q4": "What is included in the room rate?",
+    "a4": "All room rates include the breakfast buffet, service charges, taxes and VAT. Wi-Fi is free throughout the house.",
+    "q5": "How much does a night at Hotel Chalet Swiss cost?",
+    "a5": "The single room is bookable from CHF 99 per night, the double room with balcony from CHF 169 per night and the family room with four beds from CHF 259 per night. The breakfast buffet is included in every rate.",
+    "q6": "How far is the hotel from Interlaken West station?",
+    "a6": "Interlaken West station is a 5 minute walk away.",
+    "q7": "Which excursions can I reach from the hotel?",
+    "a7": "The Jungfraujoch is 45 minutes away by train, Harder Kulm 10 minutes by funicular and Schynige Platte 30 minutes by cog railway.",
+    "q8": "Is there a loyalty discount?",
+    "a8": "We grant a loyalty discount of 11 percent on your reservation."
   },
   "cta": {
     "title": "Ready for Your Stay in the Alps?",

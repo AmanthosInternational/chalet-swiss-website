@@ -301,13 +301,22 @@ document.addEventListener('languageChanged', function () {
   <meta property="og:image" content="https://chalet-swiss.ch/assets/images/exterior/Interlaken_Dengler_Matthias_384.webp">
   <meta property="og:url" content="https://chalet-swiss.ch/">
   <meta property="og:locale" content="de_CH">
+  <!-- Bleibt stehen, obwohl https://chalet-swiss.ch/en/ 404 gibt. Die beiden
+       Dinge haengen nicht zusammen: og:locale:alternate sagt "diese Seite gibt
+       es auch in dieser Sprache" und behauptet keine zweite Adresse. Englisch
+       liegt hier unter derselben URL, umgeschaltet wird im Browser
+       (https://chalet-swiss.ch/?lang=en, dazu imprint.html und privacy.html).
+       Die Angabe ist also wahr. Was wirklich fehlt, ist hreflang, und das laesst
+       sich hier nicht sauber setzen: der Alternate waere "?lang=en", das
+       kanonisiert auf "/", und einen hreflang auf eine Seite, die woandershin
+       kanonisiert, ignoriert Google. -->
   <meta property="og:locale:alternate" content="en_US">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Hotel Chalet Swiss Interlaken">
   <meta name="twitter:description" content="Charmantes Alpenhotel im Herzen von Interlaken, zwischen Thuner- und Brienzersee.">
-  <meta name="twitter:image" content="./assets/images/exterior/Interlaken_Dengler_Matthias_384.webp">
+  <meta name="twitter:image" content="https://chalet-swiss.ch/assets/images/exterior/Interlaken_Dengler_Matthias_384.webp">
 
   <!-- Preload critical assets for speed -->
   <link rel="preload" href="./css/style.css" as="style">
@@ -479,12 +488,88 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44, 44, 44, 0.85); }
       {"@type": "LocationFeatureSpecification", "name": "Sauna", "value": true},
       {"@type": "LocationFeatureSpecification", "name": "Family Rooms", "value": true}
     ],
+    "numberOfRooms": 52,
+    "foundingDate": "1862",
     "checkinTime": "15:00",
     "checkoutTime": "11:00",
     "priceRange": "CHF 99 - CHF 259",
     "currenciesAccepted": "CHF",
     "paymentAccepted": "Credit Card, Debit Card",
-    "image": "./assets/images/exterior/Interlaken_Dengler_Matthias_384.webp"
+    "image": "https://chalet-swiss.ch/assets/images/exterior/Interlaken_Dengler_Matthias_384.webp"
+  }
+  </script>
+  <!-- FAQ: wortgleich zum sichtbaren Abschnitt #faq. Aendert sich dort ein
+       Satz, muss er hier mitgeaendert werden. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Wie viele Zimmer hat das Hotel Chalet Swiss?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Das Hotel Chalet Swiss hat 52 Zimmer. Die Kategorien reichen vom Einzelzimmer über das Doppel- und Twinzimmer bis zum Familienzimmer mit vier Betten."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Seit wann gibt es das Hotel Chalet Swiss?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Das Haus besteht seit 1862. Es liegt an der Seestrasse 22 in 3800 Interlaken, im Berner Oberland zwischen Thunersee und Brienzersee."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wann sind Check-in und Check-out?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Check-in ist ab 15:00 Uhr möglich, Check-out bis 11:00 Uhr."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Was ist im Zimmerpreis enthalten?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Alle Zimmerpreise beinhalten das Frühstücksbuffet, Servicegebühren, Taxen und die Mehrwertsteuer. WLAN ist im ganzen Haus gratis."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Was kostet eine Übernachtung im Hotel Chalet Swiss?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Das Einzelzimmer ist ab CHF 99 pro Nacht buchbar, das Doppelzimmer mit Balkon ab CHF 169 pro Nacht und das Familienzimmer mit vier Betten ab CHF 259 pro Nacht. Das Frühstücksbuffet ist in jedem Preis enthalten."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wie weit ist es vom Hotel zum Bahnhof Interlaken West?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Der Bahnhof Interlaken West ist in 5 Minuten zu Fuss erreichbar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Welche Ausflugsziele erreiche ich vom Hotel aus?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Das Jungfraujoch ist in 45 Minuten mit der Bahn erreichbar, der Harder Kulm in 10 Minuten mit der Standseilbahn und die Schynige Platte in 30 Minuten mit der Zahnradbahn."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Gibt es einen Treuerabatt?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Auf Ihre Reservation gewähren wir einen Treuerabatt von 11 Prozent."
+        }
+      }
+    ]
   }
   </script>
   <!-- Sentry: error + performance monitoring. Config in js/sentry-init.js -->
@@ -644,6 +729,7 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44, 44, 44, 0.85); }
           <h2 data-i18n="welcome.title">Alpine Gastfreundschaft seit Generationen</h2>
           <p data-i18n="welcome.text1">Das Hotel Chalet Swiss liegt im Herzen von Interlaken, eingebettet zwischen dem Thuner- und dem Brienzersee. Unser charmantes Alpenhotel verbindet traditionelle Schweizer Gastfreundschaft mit modernem Komfort.</p>
           <p data-i18n="welcome.text2">Geniessen Sie das reichhaltige Frühstück, entspannen Sie in unserer Sauna und erkunden Sie die atemberaubende Bergwelt des Berner Oberlandes direkt vor der Haustür.</p>
+          <p data-i18n="welcome.facts">Das Haus besteht seit 1862 und bietet heute 52 Zimmer, vom Einzelzimmer bis zum Familienzimmer mit vier Betten. Check-in ab 15:00 Uhr, Check-out bis 11:00 Uhr.</p>
           <div class="welcome-features">
             <div class="welcome-feature">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -707,6 +793,10 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44, 44, 44, 0.85); }
         <div class="pricing-note">
           <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <span data-i18n="pricing.loyalty">Treuerabatt: 11% Rabatt auf Ihre Reservation</span>
+        </div>
+        <div class="pricing-note">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span data-i18n="pricing.checkin">Check-in ab 15:00 Uhr, Check-out bis 11:00 Uhr</span>
         </div>
       </div>
 
@@ -1028,6 +1118,51 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44, 44, 44, 0.85); }
     </div>
   </section>
 
+  <!-- ========== FAQ ========== -->
+  <section class="section section-alt" id="faq">
+    <div class="container">
+      <div class="section-center">
+        <p class="section-label" data-num="08" data-i18n="faq.label">Häufige Fragen</p>
+        <h2 class="section-title" data-i18n="faq.title">Antworten auf die häufigsten Fragen</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q1">Wie viele Zimmer hat das Hotel Chalet Swiss?</h3>
+          <p class="faq-answer" data-i18n="faq.a1">Das Hotel Chalet Swiss hat 52 Zimmer. Die Kategorien reichen vom Einzelzimmer über das Doppel- und Twinzimmer bis zum Familienzimmer mit vier Betten.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q2">Seit wann gibt es das Hotel Chalet Swiss?</h3>
+          <p class="faq-answer" data-i18n="faq.a2">Das Haus besteht seit 1862. Es liegt an der Seestrasse 22 in 3800 Interlaken, im Berner Oberland zwischen Thunersee und Brienzersee.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q3">Wann sind Check-in und Check-out?</h3>
+          <p class="faq-answer" data-i18n="faq.a3">Check-in ist ab 15:00 Uhr möglich, Check-out bis 11:00 Uhr.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q4">Was ist im Zimmerpreis enthalten?</h3>
+          <p class="faq-answer" data-i18n="faq.a4">Alle Zimmerpreise beinhalten das Frühstücksbuffet, Servicegebühren, Taxen und die Mehrwertsteuer. WLAN ist im ganzen Haus gratis.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q5">Was kostet eine Übernachtung im Hotel Chalet Swiss?</h3>
+          <p class="faq-answer" data-i18n="faq.a5">Das Einzelzimmer ist ab CHF 99 pro Nacht buchbar, das Doppelzimmer mit Balkon ab CHF 169 pro Nacht und das Familienzimmer mit vier Betten ab CHF 259 pro Nacht. Das Frühstücksbuffet ist in jedem Preis enthalten.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q6">Wie weit ist es vom Hotel zum Bahnhof Interlaken West?</h3>
+          <p class="faq-answer" data-i18n="faq.a6">Der Bahnhof Interlaken West ist in 5 Minuten zu Fuss erreichbar.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q7">Welche Ausflugsziele erreiche ich vom Hotel aus?</h3>
+          <p class="faq-answer" data-i18n="faq.a7">Das Jungfraujoch ist in 45 Minuten mit der Bahn erreichbar, der Harder Kulm in 10 Minuten mit der Standseilbahn und die Schynige Platte in 30 Minuten mit der Zahnradbahn.</p>
+        </div>
+        <div class="faq-item">
+          <h3 class="faq-question" data-i18n="faq.q8">Gibt es einen Treuerabatt?</h3>
+          <p class="faq-answer" data-i18n="faq.a8">Auf Ihre Reservation gewähren wir einen Treuerabatt von 11 Prozent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ========== FINAL CTA ========== -->
   <section class="section cta-final" id="final-cta">
     <div class="container" style="text-align:center">
@@ -1059,6 +1194,7 @@ body.hero-light .nav.scrolled .lang-toggle { color: rgba(44, 44, 44, 0.85); }
             <li><a href="#wellness" data-i18n="nav.wellness">Wellness</a></li>
             <li><a href="#gallery" data-i18n="nav.gallery">Galerie</a></li>
             <li><a href="#location" data-i18n="nav.location">Lage</a></li>
+            <li><a href="#faq" data-i18n="nav.faq">Häufige Fragen</a></li>
           </ul>
         </div>
 
