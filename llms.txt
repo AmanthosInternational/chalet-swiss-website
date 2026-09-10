@@ -1,7 +1,7 @@
 # Hotel Chalet Swiss
 
 > Drei-Sterne-Alpenhotel im Zentrum von Interlaken im Berner Oberland, zwischen
-> Thunersee und Brienzersee. Das Haus besteht seit 1862 und hat 52 Zimmer.
+> Thunersee und Brienzersee. Das Haus besteht seit 1862 und hat 55 Zimmer.
 > Betreiberin ist die Amanthos Hotel AG.
 
 Diese Datei fasst die belegten Eckdaten des Hauses zusammen, damit Sprachmodelle
@@ -19,7 +19,7 @@ Angaben stammen von https://chalet-swiss.ch/ und https://www.amanthos.com/.
 
 ## Zimmer und Preise
 
-52 Zimmer in sechs Kategorien. Preise pro Nacht in CHF, Frühstücksbuffet
+55 Zimmer in sechs Kategorien. Preise pro Nacht in CHF, Frühstücksbuffet
 inbegriffen.
 
 | Kategorie | Preis pro Nacht |
