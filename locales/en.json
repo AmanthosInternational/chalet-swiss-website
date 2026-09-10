@@ -256,7 +256,7 @@
     "payment_not_confirmed_yet": "Payment Not Yet Confirmed",
     "payment_processing_wait": "If you completed the payment, it may take a moment to process. You can keep checking or contact us.",
     "keep_checking": "Keep Checking",
-    "did_not_pay_cancel": "I Did Not Pay \u2014 Cancel Reservation",
+    "did_not_pay_cancel": "I Did Not Pay — Cancel Reservation",
     "upsell_title": "Make Your Stay Special",
     "upsell_subtitle": "Extras ready upon your arrival",
     "upsell_wine_red": "Red Wine (Bottle)",
@@ -318,13 +318,15 @@
     "q7": "Which excursions can I reach from the hotel?",
     "a7": "The Jungfraujoch is 45 minutes away by train, Harder Kulm 10 minutes by funicular and Schynige Platte 30 minutes by cog railway.",
     "q8": "Is there a loyalty discount?",
-    "a8": "We grant a loyalty discount of 11 percent on your reservation."
+    "a8": "We grant a loyalty discount of 11 percent on your reservation.",
+    "q9": "Can I cancel my booking?",
+    "a9": "With the standard rate you can cancel free of charge up to 5 days before arrival, until 15:00. After that the stay is charged. The non-refundable rate is cheaper and cannot be cancelled."
   },
   "cta": {
     "title": "Ready for Your Stay in the Alps?",
     "subtitle": "Book directly and secure the best rate for your Bernese Oberland experience.",
     "button": "Check Availability",
-    "reassurance": "No credit card required to search \u00b7 Best price guarantee when you book direct"
+    "reassurance": "No credit card required to search · Best price guarantee when you book direct"
   },
   "footer": {
     "brand_desc": "Charming alpine hotel in the heart of Interlaken, between Lake Thun and Lake Brienz.",

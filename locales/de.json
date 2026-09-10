@@ -243,7 +243,7 @@
     "pay_now": "Jetzt Zahlung abschliessen",
     "payment_secure_note": "Es öffnet sich ein sicheres Zahlungsfenster. Bitte schliessen Sie die Zahlung dort ab.",
     "waiting_for_payment": "Warte auf Zahlung...",
-    "checking_payment": "Zahlungsstatus wird gepr\u00fcft...",
+    "checking_payment": "Zahlungsstatus wird geprüft...",
     "cancelled_title": "Reservierung storniert",
     "cancelled_no_payment": "Zahlung nicht abgeschlossen. Ihre Reservierung wurde storniert.",
     "cancelled_rebook": "Sie können jederzeit eine neue Reservierung vornehmen.",
@@ -253,10 +253,10 @@
     "payment_link_expired": "Zahlungslink konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
     "retry_payment": "Zahlungslink erneut erstellen",
     "or_contact": "Oder kontaktieren Sie uns:",
-    "payment_not_confirmed_yet": "Zahlung noch nicht best\u00e4tigt",
-    "payment_processing_wait": "Falls Sie bezahlt haben, kann die Verarbeitung einen Moment dauern. Sie k\u00f6nnen weiter pr\u00fcfen oder uns kontaktieren.",
-    "keep_checking": "Weiter pr\u00fcfen",
-    "did_not_pay_cancel": "Ich habe nicht bezahlt \u2014 Reservierung stornieren",
+    "payment_not_confirmed_yet": "Zahlung noch nicht bestätigt",
+    "payment_processing_wait": "Falls Sie bezahlt haben, kann die Verarbeitung einen Moment dauern. Sie können weiter prüfen oder uns kontaktieren.",
+    "keep_checking": "Weiter prüfen",
+    "did_not_pay_cancel": "Ich habe nicht bezahlt — Reservierung stornieren",
     "upsell_title": "Machen Sie Ihren Aufenthalt besonders",
     "upsell_subtitle": "Extras bereit bei Ihrer Ankunft",
     "upsell_wine_red": "Rotwein (Flasche)",
@@ -318,13 +318,15 @@
     "q7": "Welche Ausflugsziele erreiche ich vom Hotel aus?",
     "a7": "Das Jungfraujoch ist in 45 Minuten mit der Bahn erreichbar, der Harder Kulm in 10 Minuten mit der Standseilbahn und die Schynige Platte in 30 Minuten mit der Zahnradbahn.",
     "q8": "Gibt es einen Treuerabatt?",
-    "a8": "Auf Ihre Reservation gewähren wir einen Treuerabatt von 11 Prozent."
+    "a8": "Auf Ihre Reservation gewähren wir einen Treuerabatt von 11 Prozent.",
+    "q9": "Kann ich meine Buchung stornieren?",
+    "a9": "Bei der Standardrate stornieren Sie bis 5 Tage vor Anreise kostenlos, jeweils bis 15:00 Uhr. Danach wird der Aufenthalt verrechnet. Die nicht erstattbare Rate ist günstiger und lässt sich nicht stornieren."
   },
   "cta": {
     "title": "Bereit für Ihren Aufenthalt in den Alpen?",
     "subtitle": "Buchen Sie direkt und sichern Sie sich den besten Preis für Ihr Erlebnis im Berner Oberland.",
     "button": "Verfügbarkeit prüfen",
-    "reassurance": "Keine Kreditkarte nötig zum Suchen \u00b7 Bestpreis-Garantie bei Direktbuchung"
+    "reassurance": "Keine Kreditkarte nötig zum Suchen · Bestpreis-Garantie bei Direktbuchung"
   },
   "footer": {
     "brand_desc": "Charmantes Alpenhotel im Herzen von Interlaken, zwischen Thuner- und Brienzersee.",
