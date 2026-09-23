@@ -29,6 +29,10 @@
   // Leert man die Konstante, ist dieser Teil wieder vollstaendig still.
   var PIXEL_ID = '516536478992095';
 
+  // GA4-Property dieser Site (index.html), fuer gtag('get', ...) unten
+  // (Bauplan kauf-nach-zahlung, K1).
+  var GA4_MEASUREMENT_ID = 'G-XKDQLKRSJF';
+
   var STORE_KEY = 'am_click_ids';
   var MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;  // Google-Ads-Klickfenster
   // UTM-Parameter teilen sich Speicher, 90-Tage-Fenster, Consent-Regel und
@@ -44,11 +48,16 @@
 
   // ---- Klick-IDs -----------------------------------------------------------
 
+  // gbraid/wbraid wie gclid: Google-Klick-Kennungen auf iOS bzw. Web-zu-App
+  // (Bauplan kauf-nach-zahlung, K1). Gleiche Regeln wie gclid: URL, 90 Tage,
+  // nur mit Einwilligung.
+  var KLICK_ID_FELDER = ['gclid', 'fbclid', 'gbraid', 'wbraid'];
+
   function ausUrl() {
     var out = {};
     try {
       var p = new URLSearchParams(location.search);
-      ['gclid', 'fbclid'].forEach(function (k) {
+      KLICK_ID_FELDER.forEach(function (k) {
         var v = p.get(k);
         if (v) { out[k] = String(v).slice(0, 512); }
       });
@@ -82,13 +91,14 @@
     try {
       var alt = gespeichert();
       var neu = { ts: Date.now() };
-      ['gclid', 'fbclid'].concat(UTM_FELDER).forEach(function (k) {
+      KLICK_ID_FELDER.concat(UTM_FELDER).forEach(function (k) {
         var v = ausUrlGelesen[k] || alt[k];
         if (v) { neu[k] = v; }
       });
       // Auch UTM ohne Klick-ID wird gehalten: Newsletter-Klicks und Faelle, in
       // denen ein Blocker die fbclid schluckt, blieben sonst unsichtbar.
-      if (neu.gclid || neu.fbclid || neu.utm_source || neu.utm_medium || neu.utm_campaign) {
+      if (neu.gclid || neu.fbclid || neu.gbraid || neu.wbraid ||
+          neu.utm_source || neu.utm_medium || neu.utm_campaign) {
         window.localStorage.setItem(STORE_KEY, JSON.stringify(neu));
       }
     } catch (e) { /* Privatmodus: dann haelt die ID nur diese Seite lang */ }
@@ -109,8 +119,12 @@
     var out = { consent: 'granted' };
     var gclid = ausUrlGelesen.gclid || alt.gclid;
     var fbclid = ausUrlGelesen.fbclid || alt.fbclid;
+    var gbraid = ausUrlGelesen.gbraid || alt.gbraid;
+    var wbraid = ausUrlGelesen.wbraid || alt.wbraid;
     if (gclid) { out.gclid = gclid; }
     if (fbclid) { out.fbclid = fbclid; }
+    if (gbraid) { out.gbraid = gbraid; }
+    if (wbraid) { out.wbraid = wbraid; }
     UTM_FELDER.forEach(function (k) {
       var v = ausUrlGelesen[k] || alt[k];
       if (v) { out[k] = v; }
@@ -125,9 +139,34 @@
     }
     if (fbc) { out.fbc = fbc; }
 
+    // GA4-Client- und Session-ID (Bauplan kauf-nach-zahlung, K1): asynchron per
+    // gtag('get', ...) geladen und hier nur aus dem Cache gelesen (gaIdsLaden
+    // unten). Beim ersten Aufruf direkt nach Zustimmung kann der Cache noch leer
+    // sein, das Feld entfaellt dann einfach.
+    if (gaCache.clientId) { out.ga_client_id = gaCache.clientId; }
+    if (gaCache.sessionId) { out.ga_session_id = gaCache.sessionId; }
+
     // consent allein sagt nichts aus — dann lieber gar nichts mitschicken.
-    return (out.gclid || out.fbclid || out.fbp || out.fbc ||
-            out.utm_source || out.utm_medium || out.utm_campaign) ? out : null;
+    return (out.gclid || out.fbclid || out.gbraid || out.wbraid || out.fbp || out.fbc ||
+            out.utm_source || out.utm_medium || out.utm_campaign ||
+            out.ga_client_id || out.ga_session_id) ? out : null;
+  }
+
+  // ---- GA4 client_id/session_id (K1) ---------------------------------------
+
+  var gaCache = { clientId: null, sessionId: null };
+
+  function gaIdsLaden() {
+    if (!zustimmung()) { return; }
+    try {
+      if (typeof window.gtag !== 'function' || !GA4_MEASUREMENT_ID) { return; }
+      window.gtag('get', GA4_MEASUREMENT_ID, 'client_id', function (id) {
+        if (id) { gaCache.clientId = String(id).slice(0, 512); }
+      });
+      window.gtag('get', GA4_MEASUREMENT_ID, 'session_id', function (id) {
+        if (id) { gaCache.sessionId = String(id).slice(0, 512); }
+      });
+    } catch (e) { /* Analytics darf die Buchungsstrecke nie brechen */ }
   }
 
   // ---- Pixel ---------------------------------------------------------------
@@ -173,7 +212,15 @@
       if (d && d.extras_total) { wert += d.extras_total; }
       return ['InitiateCheckout', { value: wert, currency: 'CHF' }];
     },
+    // Kein Kauf-Ereignis mehr vor der Zahlung (Bauplan kauf-nach-zahlung, K1/K7):
+    // eine bestaetigte, aber nie bezahlte Buchung ist kein Kauf. BookingCreated
+    // ist ein reines Absichtssignal ohne Betrag, trackCustom statt track, weil
+    // es kein Meta-Standardereignis ist.
     booking_confirmed: function (d) {
+      return ['BookingCreated', {}, { custom: true }];
+    },
+    // Der Kauf zaehlt erst hier, mit dem bestaetigten Betrag (K7).
+    payment_completed: function (d) {
       return ['Purchase', { value: d && d.total_price, currency: (d && d.currency) || 'CHF' }];
     }
   };
@@ -186,20 +233,22 @@
     try {
       var teile = bau(data || {});
       var params = teile[1] || {};
+      var eventOpts = teile[2] || {};
       Object.keys(params).forEach(function (k) {
         if (params[k] === undefined || params[k] === null || params[k] === '') { delete params[k]; }
       });
-      // Dedup-Klammer zur Server-Meldung: dieselbe Buchungsnummer auf beiden
-      // Seiten, sonst zaehlt Meta denselben Kauf zweimal. Die Nummer steckt
-      // bereits im data-Objekt (GA4 nutzt sie als transaction_id), deshalb
-      // bleiben die Aufrufstellen unveraendert.
-      if (!(opts && opts.eventID) && name === 'booking_confirmed' && data && data.booking_id) {
+      // Dedup-Klammer zur Server-Meldung (CAPI): dieselbe Buchungsnummer auf
+      // beiden Seiten, sonst zaehlt Meta denselben Kauf zweimal (Bauplan
+      // kauf-nach-zahlung, K5/K7). Haengt seit dem Plan an payment_completed,
+      // nicht mehr an booking_confirmed.
+      if (!(opts && opts.eventID) && name === 'payment_completed' && data && data.booking_id) {
         opts = { eventID: data.booking_id };
       }
+      var methode = eventOpts.custom ? 'trackCustom' : 'track';
       if (opts && opts.eventID) {
-        window.fbq('track', teile[0], params, { eventID: String(opts.eventID) });
+        window.fbq(methode, teile[0], params, { eventID: String(opts.eventID) });
       } else {
-        window.fbq('track', teile[0], params);
+        window.fbq(methode, teile[0], params);
       }
     } catch (e) { /* nie werfen */ }
   }
@@ -216,16 +265,19 @@
     // Dieser Aufruf greift den Wiederkehrer mit gespeicherter Zustimmung ab;
     // consent.js meldet jeden spaeteren Wechsel an den Listener darunter, weil
     // meta.js mit defer laedt und damit NACH dem synchronen Erstlauf laeuft.
-    if (zustimmung()) { pixelLaden(); }
+    if (zustimmung()) { pixelLaden(); gaIdsLaden(); }
     document.addEventListener('am:consent-change', function (ev) {
       var state = ev && ev.detail ? ev.detail.state : null;
       if (state === 'granted') {
         speichern();
         pixelLaden();
+        gaIdsLaden();
         try { if (window.fbq) { window.fbq('consent', 'grant'); } } catch (e) {}
       } else {
         try { if (window.fbq) { window.fbq('consent', 'revoke'); } } catch (e) {}
         try { window.localStorage.removeItem(STORE_KEY); } catch (e) {}
+        gaCache.clientId = null;
+        gaCache.sessionId = null;
       }
     });
   } catch (e) { /* nie werfen */ }
