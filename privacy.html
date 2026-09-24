@@ -450,9 +450,28 @@ document.addEventListener('languageChanged', function () {
       <p>
         During the booking process we additionally count individual steps, such as the
         availability search, viewing offers and completing a booking. What is transmitted
-        to Plausible is the property concerned, the respective step, and, for a confirmed
-        booking, its total amount. Booking and reservation numbers, names, email addresses, travel
+        to Plausible is the property concerned and the respective step, without any amount.
+        Booking and reservation numbers, names, email addresses, travel
         dates, guest numbers and voucher codes are not transmitted.
+      </p>
+      <p>
+        A purchase is not reported by your browser but by our server (the booking interface),
+        and only once payment for the reservation has been received, exactly once per booking.
+        What is transmitted is the event "Purchase", the property concerned, the amount actually
+        paid with its currency and the type of source of your visit (such as search engine,
+        advertising or direct access). So that Plausible can attribute the event to a visit and
+        distinguish it from bots, our server also transmits the IP address and the browser
+        identifier (user agent) that reached our server when the booking was submitted.
+        Plausible does not store the IP address; it only uses it to form a visitor identifier
+        that changes daily and cannot be traced back to you. Plausible does not receive names,
+        email addresses, booking numbers or travel dates.
+      </p>
+      <p>
+        For this report we store the IP address and browser identifier for no more than 7 days
+        and delete them earlier, as soon as the report has been made or the booking has been
+        cancelled. The report is made regardless of your choice in the cookie notice, like the
+        rest of the Plausible measurement. The legal basis is our legitimate interest in
+        measuring booking success.
       </p>
       <p>
         We also count clicks on links to other websites, file downloads, form submissions
@@ -468,15 +487,26 @@ document.addEventListener('languageChanged', function () {
         agreed in the cookie notice. In Switzerland we measure on the basis of our
         legitimate interest; you may object at any time. Advertising features and Google
         Signals are permanently switched off and there is no link to Google Ads. The data
-        is retained for 14 months.
+        is retained for 14 months. The measurement of Google Ads advertisements described
+        below is separate from this.
       </p>
       <p>
         During the booking process we transmit the same steps to Google Analytics as to
         Plausible, plus the names of the room type and the selected rate, the number of
-        adults, the total amount of a confirmed booking and the booking number as the
-        transaction ID, so that revenue is not counted twice. Names, email addresses,
+        adults and, when the booking is completed, the booking number, without any amount.
+        Names, email addresses,
         telephone numbers, travel dates, voucher codes, error texts and form contents are
         not transmitted.
+      </p>
+      <p>
+        The purchase is transmitted by our server through the Google Analytics Measurement
+        Protocol, only after payment for the reservation has been received. This happens only
+        if you have expressly agreed in the cookie notice, in Switzerland as well: only then
+        does your browser pass the pseudonymous analytics identifiers (client ID and session
+        ID) to our server when the booking is submitted. What is transmitted is these
+        identifiers, the amount paid, the currency and the booking number as the transaction
+        ID, so that revenue is not counted twice. Without your agreement, Google Analytics
+        receives no purchase from our server.
       </p>
       <p>
         Your choice applies to this browser and can be changed at any time:
@@ -491,11 +521,15 @@ document.addEventListener('languageChanged', function () {
         transmits which pages you viewed and which booking steps you completed.
       </p>
       <p>
-        In addition, we transmit completed bookings to Meta from our own server through the
-        Conversions API. Email address and phone number are transmitted exclusively as an
+        In addition, we transmit paid bookings to Meta from our own server through the
+        Conversions API, only once payment for the reservation has been received and with the
+        amount paid. This, too, happens only with your consent. Email address and phone number
+        are transmitted exclusively as an
         irreversible SHA-256 hash, never in plain text; we do not transmit your IP address or
         browser identifier. The purpose is solely to attribute a booking to an advertisement,
-        not to identify you.
+        not to identify you. The pixel in your browser reports the purchase only once the page
+        sees the payment confirmed, together with the booking number, so that Meta counts it
+        only once alongside the report from our server.
       </p>
       <p>
         The legal basis is your consent (Art. 6(1)(a) GDPR, Art. 31(1) revFADP). You may
@@ -503,6 +537,26 @@ document.addEventListener('languageChanged', function () {
         the bottom of the page; the pixel will then no longer be loaded. Meta also processes
         data in the United States. Details are set out in Meta's
         <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener">privacy policy</a>.
+      </p>
+
+      <p>
+        <strong>Google Ads:</strong> To measure whether our advertisements on Google lead to
+        bookings, we use Google Ads conversion measurement, provided by Google Ireland Limited.
+        If you reach us through a Google advertisement and have agreed in the cookie notice,
+        your browser keeps the click identifier of the advertisement (<code>gclid</code>, or
+        <code>gbraid</code> or <code>wbraid</code>) and passes it to our server when the
+        booking is submitted. Once payment has been received, our server transmits this click
+        identifier, the booking number and the amount paid to Google Ads. Names, email
+        addresses and phone numbers are not transmitted. If a booking is cancelled later, we
+        may report it to Google Ads as retracted.
+      </p>
+      <p>
+        Without your agreement, no click identifier is stored and no booking is reported to
+        Google Ads. The Google Ads tag on this website likewise sets advertising cookies only
+        after you have agreed; until then it sends only cookieless signals under Consent Mode.
+        The legal basis is your consent (Art. 6(1)(a) GDPR, Art. 31(1) revFADP), which you may
+        withdraw at any time via the cookie notice. Google also processes data in the United
+        States.
       </p>
 
       <h2>5. Recipients and processors</h2>
@@ -518,6 +572,7 @@ document.addEventListener('languageChanged', function () {
         <li>Functional Software, Inc. (Sentry) — error and performance monitoring, processed in the EU region</li>
         <li>Plausible Insights OÜ (Estonia) — cookie-free audience measurement</li>
         <li>Google Ireland Limited and Google LLC (USA) — Google Analytics 4 as well as the Google Maps mapping service</li>
+        <li>Google Ireland Limited (Ireland): measuring the success of Google Ads advertisements</li>
       </ul>
       <p>
         Where service providers are based outside Switzerland or the EEA, transfers take
@@ -546,7 +601,7 @@ document.addEventListener('languageChanged', function () {
         at the relevant time applies.
       </p>
 
-      <p class="stand">Last updated: August 2026</p>
+      <p class="stand">Last updated: 24 September 2026</p>
     </div>
   </main>
 
