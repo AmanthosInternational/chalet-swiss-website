@@ -455,10 +455,29 @@ document.addEventListener('languageChanged', function () {
       <p>
         Im Buchungsvorgang zählen wir zusätzlich einzelne Schritte, etwa die
         Verfügbarkeitssuche, das Ansehen von Angeboten und den Abschluss einer Buchung.
-        An Plausible übermittelt werden dabei das betroffene Haus, der jeweilige
-        Bearbeitungsschritt und bei einer bestätigten Buchung deren Gesamtbetrag. Buchungs- und
+        An Plausible übermittelt werden dabei das betroffene Haus und der jeweilige
+        Bearbeitungsschritt, ohne Betrag. Buchungs- und
         Reservierungsnummern, Namen, E-Mail-Adressen, Reisedaten, Gästezahlen und
         Gutscheincodes werden nicht übermittelt.
+      </p>
+      <p>
+        Einen Kauf meldet nicht Ihr Browser, sondern unser Server (die Buchungsschnittstelle),
+        und zwar erst, wenn die Zahlung auf der Reservierung eingegangen ist, und für jede
+        Buchung genau einmal. Übermittelt werden das Ereignis «Kauf», das betroffene Haus, der
+        tatsächlich bezahlte Betrag samt Währung und die Herkunftsart Ihres Besuchs (etwa
+        Suchmaschine, Werbung oder direkter Aufruf). Damit Plausible das Ereignis einem Besuch
+        zuordnen und von Bots unterscheiden kann, übermittelt unser Server dabei auch die
+        IP-Adresse und die Browserkennung (User-Agent), die beim Absenden der Buchung an unseren
+        Server gingen. Plausible speichert die IP-Adresse nicht, sondern bildet daraus nur eine
+        täglich wechselnde Besucherkennung, die sich nicht auf Sie zurückführen lässt. Namen,
+        E-Mail-Adressen, Buchungsnummern und Reisedaten erhält Plausible nicht.
+      </p>
+      <p>
+        Für diese Meldung speichern wir IP-Adresse und Browserkennung höchstens 7 Tage und
+        löschen sie früher, sobald die Meldung erfolgt oder die Buchung storniert ist. Die
+        Meldung erfolgt unabhängig von Ihrer Wahl im Cookie-Hinweis, wie die übrige Messung mit
+        Plausible. Rechtsgrundlage ist unser berechtigtes Interesse an der Messung des
+        Buchungserfolgs.
       </p>
       <p>
         Ebenfalls gezählt werden Klicks auf Verweise zu anderen Websites, das Herunterladen
@@ -475,15 +494,25 @@ document.addEventListener('languageChanged', function () {
         Cookie-Hinweis zustimmen. In der Schweiz messen wir auf Grundlage unseres
         berechtigten Interesses; Sie können jederzeit widersprechen. Werbefunktionen und
         Google Signals sind dauerhaft abgeschaltet, eine Verknüpfung mit Google Ads besteht
-        nicht. Die Daten werden 14 Monate aufbewahrt.
+        nicht. Die Daten werden 14 Monate aufbewahrt. Die unten beschriebene Messung von
+        Google-Ads-Anzeigen ist davon getrennt.
       </p>
       <p>
         Im Buchungsvorgang übermitteln wir an Google Analytics dieselben Schritte wie an
         Plausible, dazu die Bezeichnung von Zimmertyp und gewählter Rate, die Zahl der
-        Erwachsenen, den Gesamtbetrag einer bestätigten Buchung und die Buchungsnummer als
-        Transaktionskennung, damit ein Umsatz nicht doppelt gezählt wird. Namen,
+        Erwachsenen sowie beim Abschluss der Buchung die Buchungsnummer, ohne Betrag. Namen,
         E-Mail-Adressen, Telefonnummern, Reisedaten, Gutscheincodes, Fehlertexte und
         Formularinhalte werden nicht übermittelt.
+      </p>
+      <p>
+        Den Kauf übermittelt unser Server über das Measurement Protocol von Google Analytics,
+        erst nachdem die Zahlung auf der Reservierung eingegangen ist. Das geschieht nur, wenn
+        Sie im Cookie-Hinweis ausdrücklich zugestimmt haben, auch in der Schweiz: Nur dann
+        übergibt Ihr Browser beim Absenden der Buchung die pseudonymen Analytics-Kennungen
+        (Client-ID und Sitzungskennung) an unseren Server. Übermittelt werden diese Kennungen,
+        der bezahlte Betrag, die Währung und die Buchungsnummer als Transaktionskennung, damit
+        ein Umsatz nicht doppelt gezählt wird. Ohne Ihre Zustimmung erhält Google Analytics
+        keinen Kauf von unserem Server.
       </p>
       <p>
         Ihre Wahl gilt für diesen Browser und lässt sich jederzeit ändern:
@@ -499,11 +528,15 @@ document.addEventListener('languageChanged', function () {
         Sie abgeschlossen haben.
       </p>
       <p>
-        Ergänzend übermitteln wir abgeschlossene Buchungen serverseitig über die Conversions
-        API an Meta. E-Mail-Adresse und Telefonnummer werden dabei ausschliesslich als nicht
+        Ergänzend übermitteln wir bezahlte Buchungen serverseitig über die Conversions API an
+        Meta, und zwar erst, wenn die Zahlung auf der Reservierung eingegangen ist, mit dem
+        bezahlten Betrag. Auch das geschieht nur mit Ihrer Einwilligung. E-Mail-Adresse und
+        Telefonnummer werden dabei ausschliesslich als nicht
         umkehrbarer SHA-256-Hashwert übertragen, nicht im Klartext; IP-Adresse und
         Browserkennung übermitteln wir nicht. Zweck ist allein die Zuordnung einer Buchung zu
-        einer Anzeige, nicht Ihre Identifizierung.
+        einer Anzeige, nicht Ihre Identifizierung. Der Pixel im Browser meldet den Kauf erst,
+        wenn die Seite die Zahlung bestätigt sieht, und zwar mit der Buchungsnummer, damit Meta
+        ihn zusammen mit der Meldung unseres Servers nur einmal zählt.
       </p>
       <p>
         Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, Art. 31 Abs. 1
@@ -511,6 +544,26 @@ document.addEventListener('languageChanged', function () {
         Analyse-Einstellungen am Seitenende widerrufen; der Pixel wird dann nicht mehr
         geladen. Meta bearbeitet Daten auch in den USA. Einzelheiten in der
         <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener">Datenschutzrichtlinie von Meta</a>.
+      </p>
+
+      <p>
+        <strong>Google Ads:</strong> Um zu messen, ob unsere Anzeigen bei Google zu Buchungen
+        führen, nutzen wir die Conversion-Messung von Google Ads der Google Ireland Limited.
+        Kommen Sie über eine Google-Anzeige zu uns und haben Sie im Cookie-Hinweis zugestimmt,
+        merkt sich Ihr Browser die Klickkennung der Anzeige (<code>gclid</code> bzw.
+        <code>gbraid</code> oder <code>wbraid</code>) und übergibt sie beim Absenden der Buchung
+        an unseren Server. Nach Eingang der Zahlung übermittelt unser Server diese
+        Klickkennung, die Buchungsnummer und den bezahlten Betrag an Google Ads. Namen,
+        E-Mail-Adressen und Telefonnummern werden nicht übermittelt. Wird eine Buchung später
+        storniert, können wir sie in Google Ads als zurückgezogen melden.
+      </p>
+      <p>
+        Ohne Ihre Zustimmung wird keine Klickkennung gespeichert und keine Buchung an Google
+        Ads gemeldet. Das Google-Ads-Tag auf dieser Website setzt Werbe-Cookies ebenfalls erst
+        nach Ihrer Zustimmung; bis dahin sendet es im Consent Mode nur cookielose Signale.
+        Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, Art. 31 Abs. 1
+        revDSG), die Sie jederzeit über den Cookie-Hinweis widerrufen können. Google bearbeitet
+        Daten auch in den USA.
       </p>
 
       <h2>5. Empfänger und Auftragsbearbeiter</h2>
@@ -526,6 +579,7 @@ document.addEventListener('languageChanged', function () {
         <li>Functional Software, Inc. (Sentry) — Fehler- und Leistungsüberwachung, Verarbeitung in der EU-Region</li>
         <li>Plausible Insights OÜ (Estland) — Reichweitenmessung ohne Cookies</li>
         <li>Google Ireland Limited und Google LLC (USA) — Google Analytics 4 sowie Kartendienst Google Maps</li>
+        <li>Google Ireland Limited (Irland): Erfolgsmessung von Google-Ads-Anzeigen</li>
       </ul>
       <p>
         Bei Dienstleistern mit Sitz ausserhalb der Schweiz bzw. des EWR erfolgt die
@@ -554,7 +608,7 @@ document.addEventListener('languageChanged', function () {
         dieser Website publizierte Fassung.
       </p>
 
-      <p class="stand">Stand: August 2026</p>
+      <p class="stand">Stand: 24. September 2026</p>
     </div>
   </main>
 
