@@ -60,7 +60,7 @@
       "cancellationFee": {
         "code": "FLEX",
         "name": "Flexible",
-        "description": "Free cancellation up to 5 days prior to arrival.",
+        "description": "Free cancellation up to 14 days prior to arrival.",
         "dueDateTime": "2026-10-05T18:00:00+02:00",
         "fee": { "amount": 0.0, "currency": "CHF" }
       },
